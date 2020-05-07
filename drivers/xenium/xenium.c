@@ -122,7 +122,7 @@ void xenium_erase_bank(u8 bank){
         return;
 
     printk("Erasing Bank %u ", bank);
-	xenium_set_bank(bank);
+    xenium_set_bank(bank);
     xenium_flash_reset();
     for(u32 i = 0; i <= bank_size; i += XENIUM_FLASH_SECTOR_SIZE){
         printk(" . ");
@@ -136,8 +136,8 @@ void xenium_write_bank(u8 bank, u8* data){
     if (bank_size == 0)
         return;
 
-	printk("Writing Bank %u ", bank);
-	xenium_set_bank(bank);
+    printk("Writing Bank %u ", bank);
+    xenium_set_bank(bank);
     xenium_flash_reset();
     xenium_flash_write_stream(0, data, bank_size);  
 }
