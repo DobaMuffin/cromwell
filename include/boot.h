@@ -36,14 +36,14 @@ unsigned int xbox_ram;
 #define ICON_WIDTH 64
 #define ICON_HEIGHT 64
 
-static inline double min (double a, double b)
-{
-	if (a < b) return a; else return b;
+static inline double min (double a, double b) {
+    if (a < b) return a;
+    else return b;
 }
 
-static inline double max (double a, double b)
-{
-	if (a > b) return a; else return b;
+static inline double max (double a, double b) {
+    if (a > b) return a;
+    else return b;
 }
 
 #include "iso_fs.h"
@@ -76,21 +76,21 @@ u8 VIDEO_AV_MODE ;
 // Superfunky i386 internal structures
 
 typedef struct gdt_t {
-        unsigned short       m_wSize __attribute__ ((packed));
-        unsigned long m_dwBase32 __attribute__ ((packed));
-        unsigned short       m_wDummy __attribute__ ((packed));
+    unsigned short       m_wSize __attribute__ ((packed));
+    unsigned long m_dwBase32 __attribute__ ((packed));
+    unsigned short       m_wDummy __attribute__ ((packed));
 } ts_descriptor_pointer;
 
 typedef struct {  // inside an 8-byte protected mode interrupt vector
-	u16 m_wHandlerHighAddressLow16;
-	u16 m_wSelector;
-	u16 m_wType;
-	u16 m_wHandlerLinearAddressHigh16;
+    u16 m_wHandlerHighAddressLow16;
+    u16 m_wSelector;
+    u16 m_wType;
+    u16 m_wHandlerLinearAddressHigh16;
 } ts_pm_interrupt;
 
 typedef enum {
-	EDT_UNKNOWN= 0,
-	EDT_XBOXFS
+    EDT_UNKNOWN= 0,
+    EDT_XBOXFS
 } enumDriveType;
 
 typedef struct tsHarddiskInfo {  // this is the retained knowledge about an IDE device after init
@@ -122,26 +122,26 @@ typedef struct tsHarddiskInfo {  // this is the retained knowledge about an IDE 
 // or these together as argument to I2cSetFrontpanelLed
 
 enum {
-	I2C_LED_RED0 = 0x80,
-	I2C_LED_RED1 = 0x40,
-	I2C_LED_RED2 = 0x20,
-	I2C_LED_RED3 = 0x10,
-	I2C_LED_GREEN0 = 0x08,
-	I2C_LED_GREEN1 = 0x04,
-	I2C_LED_GREEN2 = 0x02,
-	I2C_LED_GREEN3 = 0x01
+    I2C_LED_RED0 = 0x80,
+    I2C_LED_RED1 = 0x40,
+    I2C_LED_RED2 = 0x20,
+    I2C_LED_RED3 = 0x10,
+    I2C_LED_GREEN0 = 0x08,
+    I2C_LED_GREEN1 = 0x04,
+    I2C_LED_GREEN2 = 0x02,
+    I2C_LED_GREEN3 = 0x01
 };
 
 ///////////////////////////////
 /* BIOS-wide error codes		all have b31 set  */
 
 enum {
-	ERR_SUCCESS = 0,  // completed without error
+    ERR_SUCCESS = 0,  // completed without error
 
-	ERR_I2C_ERROR_TIMEOUT = 0x80000001,  // I2C action failed because it did not complete in a reasonable time
-	ERR_I2C_ERROR_BUS = 0x80000002, // I2C action failed due to non retryable bus error
+    ERR_I2C_ERROR_TIMEOUT = 0x80000001,  // I2C action failed because it did not complete in a reasonable time
+    ERR_I2C_ERROR_BUS = 0x80000002, // I2C action failed due to non retryable bus error
 
-	ERR_BOOT_PIC_ALG_BROKEN = 0x80000101 // PIC algorithm did not pass its self-test
+    ERR_BOOT_PIC_ALG_BROKEN = 0x80000101 // PIC algorithm did not pass its self-test
 };
 
 /////////////////////////////////
@@ -160,7 +160,7 @@ static __inline void IoOutputByte(u16 wAds, u8 bValue) {
 static __inline void IoOutputWord(u16 wAds, u16 wValue) {
 //	__asm__  ("	 out	%%ax,%%dx	" : : "edx" (dwAds), "ax" (wValue)  );
     __asm__ __volatile__ ("outw %0,%w1": :"a" (wValue), "Nd" (wAds));
-	}
+}
 
 static __inline void IoOutputDword(u16 wAds, u32 dwValue) {
 //	__asm__  ("	 out	%%eax,%%dx	" : : "edx" (dwAds), "ax" (wValue)  );
@@ -169,24 +169,24 @@ static __inline void IoOutputDword(u16 wAds, u32 dwValue) {
 
 
 static __inline u8 IoInputByte(u16 wAds) {
-  unsigned char _v;
+    unsigned char _v;
 
-  __asm__ __volatile__ ("inb %w1,%0":"=a" (_v):"Nd" (wAds));
-  return _v;
+    __asm__ __volatile__ ("inb %w1,%0":"=a" (_v):"Nd" (wAds));
+    return _v;
 }
 
 static __inline u16 IoInputWord(u16 wAds) {
-  u16 _v;
+    u16 _v;
 
-  __asm__ __volatile__ ("inw %w1,%0":"=a" (_v):"Nd" (wAds));
-  return _v;
+    __asm__ __volatile__ ("inw %w1,%0":"=a" (_v):"Nd" (wAds));
+    return _v;
 }
 
 static __inline u32 IoInputDword(u16 wAds) {
-  u32 _v;
+    u32 _v;
 
-  __asm__ __volatile__ ("inl %w1,%0":"=a" (_v):"Nd" (wAds));
-  return _v;
+    __asm__ __volatile__ ("inl %w1,%0":"=a" (_v):"Nd" (wAds));
+    return _v;
 }
 
 #define rdmsr(msr,val1,val2) \
@@ -202,9 +202,9 @@ static __inline u32 IoInputDword(u16 wAds) {
 
 void BootPciInterruptEnable(void);
 
-	// boot process
+// boot process
 int BootPerformPicChallengeResponseAction(void);
-	// LED control (see associated enum above)
+// LED control (see associated enum above)
 int I2cSetFrontpanelLed(u8 b);
 
 void bprintf(const char *fmt, ...);
@@ -216,8 +216,8 @@ void bprintf(const char *fmt, ...);
 #endif
 
 typedef struct _LIST_ENTRY {
-	struct _LIST_ENTRY *m_plistentryNext;
-	struct _LIST_ENTRY *m_plistentryPrevious;
+    struct _LIST_ENTRY *m_plistentryNext;
+    struct _LIST_ENTRY *m_plistentryPrevious;
 } LIST_ENTRY;
 
 void ListEntryInsertAfterCurrent(LIST_ENTRY *plistentryCurrent, LIST_ENTRY *plistentryNew);
@@ -256,7 +256,7 @@ extern void	ReadPCIBlock(unsigned int bus, unsigned int dev, unsigned int func,	
 extern void	WritePCIBlock(unsigned int bus, unsigned int dev, unsigned int func, 	unsigned int reg_off, unsigned char *buf, unsigned int nbytes);
 
 void PciWriteByte (unsigned int bus, unsigned int dev, unsigned int func,
-		unsigned int reg_off, unsigned char byteval);
+                   unsigned int reg_off, unsigned char byteval);
 u8 PciReadByte(unsigned int bus, unsigned int dev, unsigned int func, unsigned int reg_off);
 u32 PciWriteDword(unsigned int bus, unsigned int dev, unsigned int func, unsigned int reg_off, u32 dw);
 u32 PciReadDword(unsigned int bus, unsigned int dev, unsigned int func, unsigned int reg_off);
@@ -321,9 +321,9 @@ void free(void *);
 extern volatile int nCountI2cinterrupts, nCountUnusedInterrupts, nCountUnusedInterruptsPic2, nCountInterruptsSmc, nCountInterruptsIde;
 extern volatile bool fSeenPowerdown;
 typedef enum {
-	ETS_OPEN_OR_OPENING=0,
-	ETS_CLOSING,
-	ETS_CLOSED
+    ETS_OPEN_OR_OPENING=0,
+    ETS_CLOSING,
+    ETS_CLOSED
 } TRAY_STATE;
 extern volatile TRAY_STATE traystate;
 

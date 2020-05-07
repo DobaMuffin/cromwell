@@ -8,14 +8,14 @@
  ***************************************************************************/
 #include "ResetMenuActions.h"
 
-void SlowReboot(void *ignored){
-	I2CRebootSlow();
+void SlowReboot(void *ignored) {
+    I2CRebootSlow();
 }
 
-void QuickReboot(void *ignored){
-	I2CRebootQuick();
+void QuickReboot(void *ignored) {
+    I2CRebootQuick();
 }
 
 void PowerOff(void *ignored) {
-	I2CPowerOff();
+    I2CPowerOff();
 }

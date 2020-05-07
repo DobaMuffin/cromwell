@@ -149,13 +149,13 @@
 #include	"nfs.h"
 
 struct arptable_t {
-	in_addr ipaddr;
-	uint8_t node[6];
+    in_addr ipaddr;
+    uint8_t node[6];
 };
 
 struct igmptable_t {
-	in_addr group;
-	unsigned long time;
+    in_addr group;
+    unsigned long time;
 };
 
 #define	KERNEL_BUF	(BOOTP_DATA_ADDR->bootp_reply.bp_file)
@@ -169,21 +169,20 @@ struct igmptable_t {
 /* at end of floppy boot block */
 
 struct rom_info {
-	unsigned short	rom_segment;
-	unsigned short	rom_length;
+    unsigned short	rom_segment;
+    unsigned short	rom_length;
 };
 
-extern inline int rom_address_ok(struct rom_info *rom, int assigned_rom_segment)
-{
-	return (assigned_rom_segment < 0xC000
-		|| assigned_rom_segment == rom->rom_segment);
+extern inline int rom_address_ok(struct rom_info *rom, int assigned_rom_segment) {
+    return (assigned_rom_segment < 0xC000
+            || assigned_rom_segment == rom->rom_segment);
 }
 
 
 /* Define a type for passing info to a loaded program */
 struct ebinfo {
-	uint8_t  major, minor;	/* Version */
-	uint16_t flags;		/* Bit flags */
+    uint8_t  major, minor;	/* Version */
+    uint16_t flags;		/* Bit flags */
 };
 
 /***************************************************************************
@@ -197,13 +196,13 @@ extern int loadkernel P((const char *fname));
 extern void rx_qdrain P((void));
 extern int tftp P((const char *name, int (*)(unsigned char *, unsigned int, unsigned int, int)));
 extern int ip_transmit P((int len, const void *buf));
-extern void build_ip_hdr P((unsigned long destip, int ttl, int protocol, 
-	int option_len, int len, const void *buf));
-extern void build_udp_hdr P((unsigned long destip, 
-	unsigned int srcsock, unsigned int destsock, int ttl,
-	int len, const void *buf));
+extern void build_ip_hdr P((unsigned long destip, int ttl, int protocol,
+                            int option_len, int len, const void *buf));
+extern void build_udp_hdr P((unsigned long destip,
+                             unsigned int srcsock, unsigned int destsock, int ttl,
+                             int len, const void *buf));
 extern int udp_transmit P((unsigned long destip, unsigned int srcsock,
-	unsigned int destsock, int len, const void *buf));
+                           unsigned int destsock, int len, const void *buf));
 typedef int (*reply_t)(int ival, void *ptr, unsigned short ptype, struct iphdr *ip, struct udphdr *udp);
 extern int await_reply P((reply_t reply,	int ival, void *ptr, long timeout));
 extern int decode_rfc1533 P((unsigned char *, unsigned int, unsigned int, int));
@@ -297,9 +296,9 @@ extern void free_unused_base_memory ( void );
 #define PACKED __attribute__((packed))
 
 struct e820entry {
-	uint64_t addr;
-	uint64_t size;
-	uint32_t type;
+    uint64_t addr;
+    uint64_t size;
+    uint32_t type;
 #define E820_RAM	1
 #define E820_RESERVED	2
 #define E820_ACPI	3 /* usable as RAM once ACPI tables have been read */
@@ -307,11 +306,11 @@ struct e820entry {
 } PACKED;
 #define E820MAX 32
 struct meminfo {
-	uint16_t basememsize;
-	uint16_t pad;
-	uint32_t memsize;
-	uint32_t map_count;
-	struct e820entry map[E820MAX];
+    uint16_t basememsize;
+    uint16_t pad;
+    uint32_t memsize;
+    uint32_t map_count;
+    struct e820entry map[E820MAX];
 } PACKED;
 extern struct meminfo meminfo;
 extern void get_memsizes(void);
@@ -327,37 +326,37 @@ extern unsigned int pcbios_disk_read P((int drv,int c,int h,int s,char *buf));
 
 /* start32.S */
 struct os_entry_regs {
-	/* Be careful changing this structure
-	 * as it is used by assembly language code.
-	 */
-	uint32_t  edi; /*  0 */
-	uint32_t  esi; /*  4 */
-	uint32_t  ebp; /*  8 */
-	uint32_t  esp; /* 12 */
-	uint32_t  ebx; /* 16 */
-	uint32_t  edx; /* 20 */
-	uint32_t  ecx; /* 24 */
-	uint32_t  eax; /* 28 */
-	
-	uint32_t saved_ebp; /* 32 */
-	uint32_t saved_esi; /* 36 */
-	uint32_t saved_edi; /* 40 */
-	uint32_t saved_ebx; /* 44 */
-	uint32_t saved_eip; /* 48 */
-	uint32_t saved_esp; /* 52 */
+    /* Be careful changing this structure
+     * as it is used by assembly language code.
+     */
+    uint32_t  edi; /*  0 */
+    uint32_t  esi; /*  4 */
+    uint32_t  ebp; /*  8 */
+    uint32_t  esp; /* 12 */
+    uint32_t  ebx; /* 16 */
+    uint32_t  edx; /* 20 */
+    uint32_t  ecx; /* 24 */
+    uint32_t  eax; /* 28 */
+
+    uint32_t saved_ebp; /* 32 */
+    uint32_t saved_esi; /* 36 */
+    uint32_t saved_edi; /* 40 */
+    uint32_t saved_ebx; /* 44 */
+    uint32_t saved_eip; /* 48 */
+    uint32_t saved_esp; /* 52 */
 };
 struct regs {
-	/* Be careful changing this structure
-	 * as it is used by assembly language code.
-	 */
-	uint32_t  edi; /*  0 */
-	uint32_t  esi; /*  4 */
-	uint32_t  ebp; /*  8 */
-	uint32_t  esp; /* 12 */
-	uint32_t  ebx; /* 16 */
-	uint32_t  edx; /* 20 */
-	uint32_t  ecx; /* 24 */
-	uint32_t  eax; /* 28 */
+    /* Be careful changing this structure
+     * as it is used by assembly language code.
+     */
+    uint32_t  edi; /*  0 */
+    uint32_t  esi; /*  4 */
+    uint32_t  ebp; /*  8 */
+    uint32_t  esp; /* 12 */
+    uint32_t  ebx; /* 16 */
+    uint32_t  edx; /* 20 */
+    uint32_t  ecx; /* 24 */
+    uint32_t  eax; /* 28 */
 };
 extern struct os_entry_regs os_regs;
 extern struct regs initial_regs;

@@ -14,23 +14,23 @@
 #include "PhyMenuActions.h"
 
 TEXTMENU *PhyMenuInit(void) {
-	TEXTMENUITEM *itemPtr;
-	TEXTMENU *menuPtr;
+    TEXTMENUITEM *itemPtr;
+    TEXTMENU *menuPtr;
 
-	menuPtr = malloc(sizeof(TEXTMENU));
-	memset(menuPtr,0x00,sizeof(TEXTMENU));
-	strcpy(menuPtr->szCaption, "Peripherals Menu");
+    menuPtr = malloc(sizeof(TEXTMENU));
+    memset(menuPtr,0x00,sizeof(TEXTMENU));
+    strcpy(menuPtr->szCaption, "Peripherals Menu");
 
 
-	CurrentSerialState = IsSerialEnabled();
+    CurrentSerialState = IsSerialEnabled();
 
-	itemPtr = malloc(sizeof(TEXTMENUITEM));
-	memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-	strcpy(itemPtr->szCaption, "Serial COM1: ");
-	strcat(itemPtr->szCaption, (CurrentSerialState ? "Enabled" : "Disabled"));
-	itemPtr->functionPtr = SetSerialEnabled;
-	itemPtr->functionDataPtr = itemPtr->szCaption;
-	TextMenuAddItem(menuPtr, itemPtr);
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Serial COM1: ");
+    strcat(itemPtr->szCaption, (CurrentSerialState ? "Enabled" : "Disabled"));
+    itemPtr->functionPtr = SetSerialEnabled;
+    itemPtr->functionDataPtr = itemPtr->szCaption;
+    TextMenuAddItem(menuPtr, itemPtr);
 
-	return menuPtr;
+    return menuPtr;
 }

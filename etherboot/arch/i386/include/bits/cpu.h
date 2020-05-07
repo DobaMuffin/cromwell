@@ -32,7 +32,7 @@
 #define X86_FEATURE_ACPI	(0*32+22) /* ACPI via MSR */
 #define X86_FEATURE_MMX		(0*32+23) /* Multimedia Extensions */
 #define X86_FEATURE_FXSR	(0*32+24) /* FXSAVE and FXRSTOR instructions (fast save and restore */
-				          /* of FPU context), and CR4.OSFXSR available */
+/* of FPU context), and CR4.OSFXSR available */
 #define X86_FEATURE_XMM		(0*32+25) /* Streaming SIMD Extensions */
 #define X86_FEATURE_XMM2	(0*32+26) /* Streaming SIMD Extensions-2 */
 #define X86_FEATURE_SELFSNOOP	(0*32+27) /* CPU self snoop */
@@ -62,13 +62,13 @@
 
 #define MAX_X86_VENDOR_ID 16
 struct cpuinfo_x86 {
-	uint8_t	 x86;		/* CPU family */
-	uint8_t	 x86_model;
-	uint8_t	 x86_mask;
+    uint8_t	 x86;		/* CPU family */
+    uint8_t	 x86_model;
+    uint8_t	 x86_mask;
 
-       	int	 cpuid_level;	/* Maximum supported CPUID level, -1=no CPUID */
-	unsigned x86_capability[NCAPINTS];
-	char	 x86_vendor_id[MAX_X86_VENDOR_ID];
+    int	 cpuid_level;	/* Maximum supported CPUID level, -1=no CPUID */
+    unsigned x86_capability[NCAPINTS];
+    char	 x86_vendor_id[MAX_X86_VENDOR_ID];
 };
 
 
@@ -107,59 +107,54 @@ struct cpuinfo_x86 {
 /*
  * Generic CPUID function
  */
-static inline void cpuid(int op, 
-	unsigned int *eax, unsigned int *ebx, unsigned int *ecx, unsigned int *edx)
-{
-	__asm__("cpuid"
-		: "=a" (*eax),
-		  "=b" (*ebx),
-		  "=c" (*ecx),
-		  "=d" (*edx)
-		: "0" (op));
+static inline void cpuid(int op,
+                         unsigned int *eax, unsigned int *ebx, unsigned int *ecx, unsigned int *edx) {
+    __asm__("cpuid"
+            : "=a" (*eax),
+            "=b" (*ebx),
+            "=c" (*ecx),
+            "=d" (*edx)
+            : "0" (op));
 }
 
 /*
  * CPUID functions returning a single datum
  */
-static inline unsigned int cpuid_eax(unsigned int op)
-{
-	unsigned int eax;
+static inline unsigned int cpuid_eax(unsigned int op) {
+    unsigned int eax;
 
-	__asm__("cpuid"
-		: "=a" (eax)
-		: "0" (op)
-		: "bx", "cx", "dx");
-	return eax;
+    __asm__("cpuid"
+            : "=a" (eax)
+            : "0" (op)
+            : "bx", "cx", "dx");
+    return eax;
 }
-static inline unsigned int cpuid_ebx(unsigned int op)
-{
-	unsigned int eax, ebx;
+static inline unsigned int cpuid_ebx(unsigned int op) {
+    unsigned int eax, ebx;
 
-	__asm__("cpuid"
-		: "=a" (eax), "=b" (ebx)
-		: "0" (op)
-		: "cx", "dx" );
-	return ebx;
+    __asm__("cpuid"
+            : "=a" (eax), "=b" (ebx)
+            : "0" (op)
+            : "cx", "dx" );
+    return ebx;
 }
-static inline unsigned int cpuid_ecx(unsigned int op)
-{
-	unsigned int eax, ecx;
+static inline unsigned int cpuid_ecx(unsigned int op) {
+    unsigned int eax, ecx;
 
-	__asm__("cpuid"
-		: "=a" (eax), "=c" (ecx)
-		: "0" (op)
-		: "bx", "dx" );
-	return ecx;
+    __asm__("cpuid"
+            : "=a" (eax), "=c" (ecx)
+            : "0" (op)
+            : "bx", "dx" );
+    return ecx;
 }
-static inline unsigned int cpuid_edx(unsigned int op)
-{
-	unsigned int eax, edx;
+static inline unsigned int cpuid_edx(unsigned int op) {
+    unsigned int eax, edx;
 
-	__asm__("cpuid"
-		: "=a" (eax), "=d" (edx)
-		: "0" (op)
-		: "bx", "cx");
-	return edx;
+    __asm__("cpuid"
+            : "=a" (eax), "=d" (edx)
+            : "0" (op)
+            : "bx", "cx");
+    return edx;
 }
 
 /*
@@ -179,7 +174,7 @@ static inline unsigned int cpuid_edx(unsigned int op)
 
 
 #define MSR_K6_EFER			0xC0000080
-/* EFER bits: */ 
+/* EFER bits: */
 #define _EFER_SCE 0  /* SYSCALL/SYSRET */
 #define _EFER_LME 8  /* Long mode enable */
 #define _EFER_LMA 10 /* Long mode active (read-only) */

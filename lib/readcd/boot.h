@@ -10,9 +10,9 @@
 
 int BootIdeReadSector(int nDriveIndex, void * pbBuffer, unsigned int block, int byte_offset, int n_bytes) {
 
-	lseek(nDriveIndex, block * 2048, SEEK_SET);
-	read(nDriveIndex, pbBuffer, 2048);
-	return 0;
+    lseek(nDriveIndex, block * 2048, SEEK_SET);
+    read(nDriveIndex, pbBuffer, 2048);
+    return 0;
 
 };
 

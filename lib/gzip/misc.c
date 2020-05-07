@@ -1,7 +1,7 @@
 /*
  * misc.c
- * 
- * This is a collection of several routines from gzip-1.0.3 
+ *
+ * This is a collection of several routines from gzip-1.0.3
  * adapted for Linux.
  *
  * malloc by Hannu Savolainen 1993 and Matthias Urlichs 1994
@@ -33,7 +33,7 @@ typedef unsigned short ush;
 typedef unsigned long  ulg;
 
 #define WSIZE 0x8000		/* Window size must be at least 32k, */
-				/* and a power of two */
+/* and a power of two */
 
 static uch *inbuf;	     /* input buffer */
 static uch window[WSIZE];    /* Sliding window buffer */
@@ -52,7 +52,7 @@ static unsigned outcnt = 0;  /* bytes in output buffer */
 #define RESERVED     0xC0 /* bit 6,7:   reserved */
 
 #define get_byte()  (inptr < insize ? inbuf[inptr++] : fill_inbuf())
-		
+
 /* Diagnostic functions */
 #ifdef DEBUG
 #  define Assert(cond,msg) {if(!(cond)) error(msg);}
@@ -75,7 +75,7 @@ static void flush_window(void);
 static void error(char *m);
 static void gzip_mark(void **);
 static void gzip_release(void **);
-  
+
 /*
  * This is set up by the setup-routine at boot-time
  */
@@ -101,69 +101,64 @@ static long free_mem_end_ptr;
 
 #include "inflate.c"
 
-static void *gzip_malloc(int size)
-{
-	void *p;
+static void *gzip_malloc(int size) {
+    void *p;
 
-	if (size <0) error("Malloc error\n");
-	if (free_mem_ptr <= 0) error("Memory error\n");
+    if (size <0) error("Malloc error\n");
+    if (free_mem_ptr <= 0) error("Memory error\n");
 
-	free_mem_ptr = (free_mem_ptr + 3) & ~3;	/* Align */
+    free_mem_ptr = (free_mem_ptr + 3) & ~3;	/* Align */
 
-	p = (void *)free_mem_ptr;
-	free_mem_ptr += size;
+    p = (void *)free_mem_ptr;
+    free_mem_ptr += size;
 
-	if (free_mem_ptr >= free_mem_end_ptr)
-		error("\nOut of memory\n");
+    if (free_mem_ptr >= free_mem_end_ptr)
+        error("\nOut of memory\n");
 
-	return p;
+    return p;
 }
 
-static void gzip_free(void *where)
-{	/* Don't care */
+static void gzip_free(void *where) {
+    /* Don't care */
 }
 
-static void gzip_mark(void **ptr)
-{
-	*ptr = (void *) free_mem_ptr;
+static void gzip_mark(void **ptr) {
+    *ptr = (void *) free_mem_ptr;
 }
 
-static void gzip_release(void **ptr)
-{
-	free_mem_ptr = (long) *ptr;
+static void gzip_release(void **ptr) {
+    free_mem_ptr = (long) *ptr;
 }
 
 /* ===========================================================================
  * Fill the input buffer. This is called only when the buffer is empty
  * and at least one byte is really needed.
  */
-static int fill_inbuf(void)
-{
-	if (insize != 0) {
-		error("ran out of input data\n");
-	}
+static int fill_inbuf(void) {
+    if (insize != 0) {
+        error("ran out of input data\n");
+    }
 
-	inbuf = input_data;
-	insize = input_len;
-	inptr = 1;
-	return inbuf[0];
+    inbuf = input_data;
+    insize = input_len;
+    inptr = 1;
+    return inbuf[0];
 }
 
 /* ===========================================================================
  * Write the output window window[0..outcnt-1] and update crc and bytes_out.
  * (Used for the decompressed data only.)
  */
-static void flush_window(void)
-{
+static void flush_window(void) {
     ulg c = crc;         /* temporary variable */
     unsigned n;
     uch *in, *out, ch;
-    
+
     in = window;
-    out = &output_data[output_ptr]; 
+    out = &output_data[output_ptr];
     for (n = 0; n < outcnt; n++) {
-	    ch = *out++ = *in++;
-	    c = crc_32_tab[((int)c ^ ch) & 0xff] ^ (c >> 8);
+        ch = *out++ = *in++;
+        c = crc_32_tab[((int)c ^ ch) & 0xff] ^ (c >> 8);
     }
     crc = c;
     bytes_out += (ulg)outcnt;
@@ -171,9 +166,8 @@ static void flush_window(void)
     outcnt = 0;
 }
 
-static void error(char *x)
-{
-	while(1);	/* Halt */
+static void error(char *x) {
+    while(1);	/* Halt */
 }
 
 #define STACK_SIZE (4096)
@@ -181,21 +175,20 @@ static void error(char *x)
 long user_stack [STACK_SIZE];
 
 struct {
-	long * a;
-	short b;
-	} stack_start = { & user_stack [STACK_SIZE] , __KERNEL_DS };
+    long * a;
+    short b;
+} stack_start = { & user_stack [STACK_SIZE], __KERNEL_DS };
 
-int decompress_kernel(char *out, char *data, int len)
-{
-	input_data = data;
-	input_len = len;
-	
-	output_data = out;
+int decompress_kernel(char *out, char *data, int len) {
+    input_data = data;
+    input_len = len;
 
-	free_mem_ptr = 0x01000000;
-	free_mem_end_ptr = 0x02000000;
+    output_data = out;
 
-	makecrc();
-	gunzip();
-	return 1;
+    free_mem_ptr = 0x01000000;
+    free_mem_end_ptr = 0x02000000;
+
+    makecrc();
+    gunzip();
+    return 1;
 }

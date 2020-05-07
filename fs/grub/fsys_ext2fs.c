@@ -53,8 +53,7 @@ typedef unsigned int __u32;
 #define EXT2_N_BLOCKS                   (EXT2_TIND_BLOCK + 1)
 
 /* include/linux/ext2_fs.h */
-struct ext2_super_block
-  {
+struct ext2_super_block {
     __u32 s_inodes_count;	/* Inodes count */
     __u32 s_blocks_count;	/* Blocks count */
     __u32 s_r_blocks_count;	/* Reserved blocks count */
@@ -81,10 +80,9 @@ struct ext2_super_block
     __u16 s_def_resuid;		/* Default uid for reserved blocks */
     __u16 s_def_resgid;		/* Default gid for reserved blocks */
     __u32 s_reserved[235];	/* Padding to the end of the block */
-  };
+};
 
-struct ext2_group_desc
-  {
+struct ext2_group_desc {
     __u32 bg_block_bitmap;	/* Blocks bitmap block */
     __u32 bg_inode_bitmap;	/* Inodes bitmap block */
     __u32 bg_inode_table;	/* Inodes table block */
@@ -93,10 +91,9 @@ struct ext2_group_desc
     __u16 bg_used_dirs_count;	/* Directories count */
     __u16 bg_pad;
     __u32 bg_reserved[3];
-  };
+};
 
-struct ext2_inode
-  {
+struct ext2_inode {
     __u16 i_mode;		/* File mode */
     __u16 i_uid;		/* Owner Uid */
     __u32 i_size;		/* 4: Size in bytes */
@@ -108,61 +105,53 @@ struct ext2_inode
     __u16 i_links_count;	/* 24: Links count */
     __u32 i_blocks;		/* Blocks count */
     __u32 i_flags;		/* 32: File flags */
-    union
-      {
-	struct
-	  {
-	    __u32 l_i_reserved1;
-	  }
-	linux1;
-	struct
-	  {
-	    __u32 h_i_translator;
-	  }
-	hurd1;
-	struct
-	  {
-	    __u32 m_i_reserved1;
-	  }
-	masix1;
-      }
+    union {
+        struct {
+            __u32 l_i_reserved1;
+        }
+        linux1;
+        struct {
+            __u32 h_i_translator;
+        }
+        hurd1;
+        struct {
+            __u32 m_i_reserved1;
+        }
+        masix1;
+    }
     osd1;			/* OS dependent 1 */
     __u32 i_block[EXT2_N_BLOCKS];	/* 40: Pointers to blocks */
     __u32 i_version;		/* File version (for NFS) */
     __u32 i_file_acl;		/* File ACL */
     __u32 i_dir_acl;		/* Directory ACL */
     __u32 i_faddr;		/* Fragment address */
-    union
-      {
-	struct
-	  {
-	    __u8 l_i_frag;	/* Fragment number */
-	    __u8 l_i_fsize;	/* Fragment size */
-	    __u16 i_pad1;
-	    __u32 l_i_reserved2[2];
-	  }
-	linux2;
-	struct
-	  {
-	    __u8 h_i_frag;	/* Fragment number */
-	    __u8 h_i_fsize;	/* Fragment size */
-	    __u16 h_i_mode_high;
-	    __u16 h_i_uid_high;
-	    __u16 h_i_gid_high;
-	    __u32 h_i_author;
-	  }
-	hurd2;
-	struct
-	  {
-	    __u8 m_i_frag;	/* Fragment number */
-	    __u8 m_i_fsize;	/* Fragment size */
-	    __u16 m_pad1;
-	    __u32 m_i_reserved2[2];
-	  }
-	masix2;
-      }
+    union {
+        struct {
+            __u8 l_i_frag;	/* Fragment number */
+            __u8 l_i_fsize;	/* Fragment size */
+            __u16 i_pad1;
+            __u32 l_i_reserved2[2];
+        }
+        linux2;
+        struct {
+            __u8 h_i_frag;	/* Fragment number */
+            __u8 h_i_fsize;	/* Fragment size */
+            __u16 h_i_mode_high;
+            __u16 h_i_uid_high;
+            __u16 h_i_gid_high;
+            __u32 h_i_author;
+        }
+        hurd2;
+        struct {
+            __u8 m_i_frag;	/* Fragment number */
+            __u8 m_i_fsize;	/* Fragment size */
+            __u16 m_pad1;
+            __u32 m_i_reserved2[2];
+        }
+        masix2;
+    }
     osd2;			/* OS dependent 2 */
-  };
+};
 
 /* linux/limits.h */
 #define NAME_MAX         255	/* # chars in a file name */
@@ -172,14 +161,13 @@ typedef long linux_off_t;
 
 /* linux/ext2fs.h */
 #define EXT2_NAME_LEN 255
-struct ext2_dir_entry
-  {
+struct ext2_dir_entry {
     __u32 inode;		/* Inode number */
     __u16 rec_len;		/* Directory entry length */
     __u8 name_len;		/* Name length */
     __u8 file_type;
     char name[EXT2_NAME_LEN];	/* File name */
-  };
+};
 
 /* linux/ext2fs.h */
 /*
@@ -241,43 +229,40 @@ struct ext2_dir_entry
  * so code should check against ~0UL first..
  */
 static __inline__ unsigned long
-ffz (unsigned long word)
-{
-  __asm__ ("bsfl %1,%0"
-:	   "=r" (word)
-:	   "r" (~word));
-  return word;
+ffz (unsigned long word) {
+    __asm__ ("bsfl %1,%0"
+             :	   "=r" (word)
+             :	   "r" (~word));
+    return word;
 }
 
 /* check filesystem types and read superblock into memory buffer */
 int
-ext2fs_mount (void)
-{
-  int retval = 1;
+ext2fs_mount (void) {
+    int retval = 1;
 
-  if ((((current_drive & 0x80) || (current_slice != 0))
-       && (current_slice != PC_SLICE_TYPE_EXT2FS)
-       && (current_slice != PC_SLICE_TYPE_LINUX_RAID)
-       && (! IS_PC_SLICE_TYPE_BSD_WITH_FS (current_slice, FS_EXT2FS))
-       && (! IS_PC_SLICE_TYPE_BSD_WITH_FS (current_slice, FS_OTHER)))
-      || part_length < (SBLOCK + (sizeof (struct ext2_super_block) / DEV_BSIZE))
-      || !devread (SBLOCK, 0, sizeof (struct ext2_super_block),
-		   (char *) SUPERBLOCK)
-      || SUPERBLOCK->s_magic != EXT2_SUPER_MAGIC)
-      retval = 0;
+    if ((((current_drive & 0x80) || (current_slice != 0))
+            && (current_slice != PC_SLICE_TYPE_EXT2FS)
+            && (current_slice != PC_SLICE_TYPE_LINUX_RAID)
+            && (! IS_PC_SLICE_TYPE_BSD_WITH_FS (current_slice, FS_EXT2FS))
+            && (! IS_PC_SLICE_TYPE_BSD_WITH_FS (current_slice, FS_OTHER)))
+            || part_length < (SBLOCK + (sizeof (struct ext2_super_block) / DEV_BSIZE))
+            || !devread (SBLOCK, 0, sizeof (struct ext2_super_block),
+                         (char *) SUPERBLOCK)
+            || SUPERBLOCK->s_magic != EXT2_SUPER_MAGIC)
+        retval = 0;
 
-  return retval;
+    return retval;
 }
 
 /* Takes a file system block number and reads it into BUFFER. */
 static int
-ext2_rdfsb (int fsblock, int buffer)
-{
+ext2_rdfsb (int fsblock, int buffer) {
 #ifdef E2DEBUG
-  printf ("fsblock %d buffer %d\n", fsblock, buffer);
+    printf ("fsblock %d buffer %d\n", fsblock, buffer);
 #endif /* E2DEBUG */
-  return devread (fsblock * (EXT2_BLOCK_SIZE (SUPERBLOCK) / DEV_BSIZE), 0,
-		  EXT2_BLOCK_SIZE (SUPERBLOCK), (char *) buffer);
+    return devread (fsblock * (EXT2_BLOCK_SIZE (SUPERBLOCK) / DEV_BSIZE), 0,
+                    EXT2_BLOCK_SIZE (SUPERBLOCK), (char *) buffer);
 }
 
 /* from
@@ -286,170 +271,150 @@ ext2_rdfsb (int fsblock, int buffer)
 /* Maps LOGICAL_BLOCK (the file offset divided by the blocksize) into
    a physical block (the location in the file system) via an inode. */
 static int
-ext2fs_block_map (int logical_block)
-{
+ext2fs_block_map (int logical_block) {
 
 #ifdef E2DEBUG
-  unsigned char *i;
-  for (i = (unsigned char *) INODE;
-       i < ((unsigned char *) INODE + sizeof (struct ext2_inode));
-       i++)
-    {
-      printf ("%c", "0123456789abcdef"[*i >> 4]);
-      printf ("%c", "0123456789abcdef"[*i % 16]);
-      if (!((i + 1 - (unsigned char *) INODE) % 16))
-	{
-	  printf ("\n");
-	}
-      else
-	{
-	  printf (" ");
-	}
+    unsigned char *i;
+    for (i = (unsigned char *) INODE;
+            i < ((unsigned char *) INODE + sizeof (struct ext2_inode));
+            i++) {
+        printf ("%c", "0123456789abcdef"[*i >> 4]);
+        printf ("%c", "0123456789abcdef"[*i % 16]);
+        if (!((i + 1 - (unsigned char *) INODE) % 16)) {
+            printf ("\n");
+        } else {
+            printf (" ");
+        }
     }
-  printf ("logical block %d\n", logical_block);
+    printf ("logical block %d\n", logical_block);
 #endif /* E2DEBUG */
 
-  /* if it is directly pointed to by the inode, return that physical addr */
-  if (logical_block < EXT2_NDIR_BLOCKS)
-    {
+    /* if it is directly pointed to by the inode, return that physical addr */
+    if (logical_block < EXT2_NDIR_BLOCKS) {
 #ifdef E2DEBUG
-      printf ("returning %d\n", (unsigned char *) (INODE->i_block[logical_block]));
-      printf ("returning %d\n", INODE->i_block[logical_block]);
+        printf ("returning %d\n", (unsigned char *) (INODE->i_block[logical_block]));
+        printf ("returning %d\n", INODE->i_block[logical_block]);
 #endif /* E2DEBUG */
-      return INODE->i_block[logical_block];
+        return INODE->i_block[logical_block];
     }
-  /* else */
-  logical_block -= EXT2_NDIR_BLOCKS;
-  /* try the indirect block */
-  if (logical_block < EXT2_ADDR_PER_BLOCK (SUPERBLOCK))
-    {
-      if (mapblock1 != 1
-	  && !ext2_rdfsb (INODE->i_block[EXT2_IND_BLOCK], DATABLOCK1))
-	{
-	  errnum = ERR_FSYS_CORRUPT;
-	  return -1;
-	}
-      mapblock1 = 1;
-      return ((__u32 *) DATABLOCK1)[logical_block];
+    /* else */
+    logical_block -= EXT2_NDIR_BLOCKS;
+    /* try the indirect block */
+    if (logical_block < EXT2_ADDR_PER_BLOCK (SUPERBLOCK)) {
+        if (mapblock1 != 1
+                && !ext2_rdfsb (INODE->i_block[EXT2_IND_BLOCK], DATABLOCK1)) {
+            errnum = ERR_FSYS_CORRUPT;
+            return -1;
+        }
+        mapblock1 = 1;
+        return ((__u32 *) DATABLOCK1)[logical_block];
     }
-  /* else */
-  logical_block -= EXT2_ADDR_PER_BLOCK (SUPERBLOCK);
-  /* now try the double indirect block */
-  if (logical_block < (1 << (EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK) * 2)))
-    {
-      int bnum;
-      if (mapblock1 != 2
-	  && !ext2_rdfsb (INODE->i_block[EXT2_DIND_BLOCK], DATABLOCK1))
-	{
-	  errnum = ERR_FSYS_CORRUPT;
-	  return -1;
-	}
-      mapblock1 = 2;
-      if ((bnum = (((__u32 *) DATABLOCK1)
-		   [logical_block >> EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK)]))
-	  != mapblock2
-	  && !ext2_rdfsb (bnum, DATABLOCK2))
-	{
-	  errnum = ERR_FSYS_CORRUPT;
-	  return -1;
-	}
-      mapblock2 = bnum;
-      return ((__u32 *) DATABLOCK2)
-	[logical_block & (EXT2_ADDR_PER_BLOCK (SUPERBLOCK) - 1)];
+    /* else */
+    logical_block -= EXT2_ADDR_PER_BLOCK (SUPERBLOCK);
+    /* now try the double indirect block */
+    if (logical_block < (1 << (EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK) * 2))) {
+        int bnum;
+        if (mapblock1 != 2
+                && !ext2_rdfsb (INODE->i_block[EXT2_DIND_BLOCK], DATABLOCK1)) {
+            errnum = ERR_FSYS_CORRUPT;
+            return -1;
+        }
+        mapblock1 = 2;
+        if ((bnum = (((__u32 *) DATABLOCK1)
+                     [logical_block >> EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK)]))
+                != mapblock2
+                && !ext2_rdfsb (bnum, DATABLOCK2)) {
+            errnum = ERR_FSYS_CORRUPT;
+            return -1;
+        }
+        mapblock2 = bnum;
+        return ((__u32 *) DATABLOCK2)
+               [logical_block & (EXT2_ADDR_PER_BLOCK (SUPERBLOCK) - 1)];
     }
-  /* else */
-  mapblock2 = -1;
-  logical_block -= (1 << (EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK) * 2));
-  if (mapblock1 != 3
-      && !ext2_rdfsb (INODE->i_block[EXT2_TIND_BLOCK], DATABLOCK1))
-    {
-      errnum = ERR_FSYS_CORRUPT;
-      return -1;
+    /* else */
+    mapblock2 = -1;
+    logical_block -= (1 << (EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK) * 2));
+    if (mapblock1 != 3
+            && !ext2_rdfsb (INODE->i_block[EXT2_TIND_BLOCK], DATABLOCK1)) {
+        errnum = ERR_FSYS_CORRUPT;
+        return -1;
     }
-  mapblock1 = 3;
-  if (!ext2_rdfsb (((__u32 *) DATABLOCK1)
-		   [logical_block >> (EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK)
-				      * 2)],
-		   DATABLOCK2))
-    {
-      errnum = ERR_FSYS_CORRUPT;
-      return -1;
+    mapblock1 = 3;
+    if (!ext2_rdfsb (((__u32 *) DATABLOCK1)
+                     [logical_block >> (EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK)
+                                        * 2)],
+                     DATABLOCK2)) {
+        errnum = ERR_FSYS_CORRUPT;
+        return -1;
     }
-  if (!ext2_rdfsb (((__u32 *) DATABLOCK2)
-		   [(logical_block >> EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK))
-		    & (EXT2_ADDR_PER_BLOCK (SUPERBLOCK) - 1)],
-		   DATABLOCK2))
-    {
-      errnum = ERR_FSYS_CORRUPT;
-      return -1;
+    if (!ext2_rdfsb (((__u32 *) DATABLOCK2)
+                     [(logical_block >> EXT2_ADDR_PER_BLOCK_BITS (SUPERBLOCK))
+                      & (EXT2_ADDR_PER_BLOCK (SUPERBLOCK) - 1)],
+                     DATABLOCK2)) {
+        errnum = ERR_FSYS_CORRUPT;
+        return -1;
     }
-  return ((__u32 *) DATABLOCK2)
-    [logical_block & (EXT2_ADDR_PER_BLOCK (SUPERBLOCK) - 1)];
+    return ((__u32 *) DATABLOCK2)
+           [logical_block & (EXT2_ADDR_PER_BLOCK (SUPERBLOCK) - 1)];
 }
 
 /* preconditions: all preconds of ext2fs_block_map */
 int
-ext2fs_read (char *buf, int len)
-{
-  int logical_block;
-  int offset;
-  int map;
-  int ret = 0;
-  int size = 0;
+ext2fs_read (char *buf, int len) {
+    int logical_block;
+    int offset;
+    int map;
+    int ret = 0;
+    int size = 0;
 
 #ifdef E2DEBUG
-  static char hexdigit[] = "0123456789abcdef";
-  unsigned char *i;
-  for (i = (unsigned char *) INODE;
-       i < ((unsigned char *) INODE + sizeof (struct ext2_inode));
-       i++)
-    {
-      printf ("%c", hexdigit[*i >> 4]);
-      printf ("%c", hexdigit[*i % 16]);
-      if (!((i + 1 - (unsigned char *) INODE) % 16))
-	{
-	  printf ("\n");
-	}
-      else
-	{
-	  printf (" ");
-	}
+    static char hexdigit[] = "0123456789abcdef";
+    unsigned char *i;
+    for (i = (unsigned char *) INODE;
+            i < ((unsigned char *) INODE + sizeof (struct ext2_inode));
+            i++) {
+        printf ("%c", hexdigit[*i >> 4]);
+        printf ("%c", hexdigit[*i % 16]);
+        if (!((i + 1 - (unsigned char *) INODE) % 16)) {
+            printf ("\n");
+        } else {
+            printf (" ");
+        }
     }
 #endif /* E2DEBUG */
-  while (len > 0)
-    {
-      /* find the (logical) block component of our location */
-      logical_block = filepos >> EXT2_BLOCK_SIZE_BITS (SUPERBLOCK);
-      offset = filepos & (EXT2_BLOCK_SIZE (SUPERBLOCK) - 1);
-      map = ext2fs_block_map (logical_block);
+    while (len > 0) {
+        /* find the (logical) block component of our location */
+        logical_block = filepos >> EXT2_BLOCK_SIZE_BITS (SUPERBLOCK);
+        offset = filepos & (EXT2_BLOCK_SIZE (SUPERBLOCK) - 1);
+        map = ext2fs_block_map (logical_block);
 #ifdef E2DEBUG
-      printf ("map=%d\n", map);
+        printf ("map=%d\n", map);
 #endif /* E2DEBUG */
-      if (map < 0)
-	break;
+        if (map < 0)
+            break;
 
-      size = EXT2_BLOCK_SIZE (SUPERBLOCK);
-      size -= offset;
-      if (size > len)
-	size = len;
+        size = EXT2_BLOCK_SIZE (SUPERBLOCK);
+        size -= offset;
+        if (size > len)
+            size = len;
 
-      disk_read_func = disk_read_hook;
+        disk_read_func = disk_read_hook;
 
-      devread (map * (EXT2_BLOCK_SIZE (SUPERBLOCK) / DEV_BSIZE),
-	       offset, size, buf);
+        devread (map * (EXT2_BLOCK_SIZE (SUPERBLOCK) / DEV_BSIZE),
+                 offset, size, buf);
 
-      disk_read_func = NULL;
+        disk_read_func = NULL;
 
-      buf += size;
-      len -= size;
-      filepos += size;
-      ret += size;
+        buf += size;
+        len -= size;
+        filepos += size;
+        ret += size;
     }
 
-  if (errnum)
-    ret = 0;
+    if (errnum)
+        ret = 0;
 
-  return ret;
+    return ret;
 }
 
 
@@ -477,11 +442,10 @@ ext2fs_read (char *buf, int len)
 */
 
 static inline
-int ext2_is_fast_symlink (void)
-{
-  int ea_blocks;
-  ea_blocks = INODE->i_file_acl ? EXT2_BLOCK_SIZE (SUPERBLOCK) / DEV_BSIZE : 0;
-  return INODE->i_blocks == ea_blocks;
+int ext2_is_fast_symlink (void) {
+    int ea_blocks;
+    ea_blocks = INODE->i_file_acl ? EXT2_BLOCK_SIZE (SUPERBLOCK) / DEV_BSIZE : 0;
+    return INODE->i_blocks == ea_blocks;
 }
 
 /* preconditions: ext2fs_mount already executed, therefore supblk in buffer
@@ -492,295 +456,265 @@ int ext2_is_fast_symlink (void)
  * side effects: messes up GROUP_DESC buffer area
  */
 int
-ext2fs_dir (char *dirname)
-{
-  int current_ino = EXT2_ROOT_INO;	/* start at the root */
-  int updir_ino = current_ino;	/* the parent of the current directory */
-  int group_id;			/* which group the inode is in */
-  int group_desc;		/* fs pointer to that group */
-  int desc;			/* index within that group */
-  int ino_blk;			/* fs pointer of the inode's information */
-  int str_chk = 0;		/* used to hold the results of a string compare */
-  struct ext2_group_desc *gdp;
-  struct ext2_inode *raw_inode;	/* inode info corresponding to current_ino */
+ext2fs_dir (char *dirname) {
+    int current_ino = EXT2_ROOT_INO;	/* start at the root */
+    int updir_ino = current_ino;	/* the parent of the current directory */
+    int group_id;			/* which group the inode is in */
+    int group_desc;		/* fs pointer to that group */
+    int desc;			/* index within that group */
+    int ino_blk;			/* fs pointer of the inode's information */
+    int str_chk = 0;		/* used to hold the results of a string compare */
+    struct ext2_group_desc *gdp;
+    struct ext2_inode *raw_inode;	/* inode info corresponding to current_ino */
 
-  char linkbuf[PATH_MAX];	/* buffer for following symbolic links */
-  int link_count = 0;
+    char linkbuf[PATH_MAX];	/* buffer for following symbolic links */
+    int link_count = 0;
 
-  char *rest;
-  char ch;			/* temp char holder */
+    char *rest;
+    char ch;			/* temp char holder */
 
-  int off;			/* offset within block of directory entry (off mod blocksize) */
-  int loc;			/* location within a directory */
-  int blk;			/* which data blk within dir entry (off div blocksize) */
-  long map;			/* fs pointer of a particular block from dir entry */
-  struct ext2_dir_entry *dp;	/* pointer to directory entry */
+    int off;			/* offset within block of directory entry (off mod blocksize) */
+    int loc;			/* location within a directory */
+    int blk;			/* which data blk within dir entry (off div blocksize) */
+    long map;			/* fs pointer of a particular block from dir entry */
+    struct ext2_dir_entry *dp;	/* pointer to directory entry */
 #ifdef E2DEBUG
-  unsigned char *i;
+    unsigned char *i;
 #endif	/* E2DEBUG */
 
-  /* loop invariants:
-     current_ino = inode to lookup
-     dirname = pointer to filename component we are cur looking up within
-     the directory known pointed to by current_ino (if any)
-   */
+    /* loop invariants:
+       current_ino = inode to lookup
+       dirname = pointer to filename component we are cur looking up within
+       the directory known pointed to by current_ino (if any)
+     */
 
-  while (1)
-    {
+    while (1) {
 #ifdef E2DEBUG
-      printf ("inode %d\n", current_ino);
-      printf ("dirname=%s\n", dirname);
+        printf ("inode %d\n", current_ino);
+        printf ("dirname=%s\n", dirname);
 #endif /* E2DEBUG */
 
-      /* look up an inode */
-      group_id = (current_ino - 1) / (SUPERBLOCK->s_inodes_per_group);
-      group_desc = group_id >> log2 (EXT2_DESC_PER_BLOCK (SUPERBLOCK));
-      desc = group_id & (EXT2_DESC_PER_BLOCK (SUPERBLOCK) - 1);
+        /* look up an inode */
+        group_id = (current_ino - 1) / (SUPERBLOCK->s_inodes_per_group);
+        group_desc = group_id >> log2 (EXT2_DESC_PER_BLOCK (SUPERBLOCK));
+        desc = group_id & (EXT2_DESC_PER_BLOCK (SUPERBLOCK) - 1);
 #ifdef E2DEBUG
-      printf ("ipg=%d, dpb=%d\n", SUPERBLOCK->s_inodes_per_group,
-	      EXT2_DESC_PER_BLOCK (SUPERBLOCK));
-      printf ("group_id=%d group_desc=%d desc=%d\n", group_id, group_desc, desc);
+        printf ("ipg=%d, dpb=%d\n", SUPERBLOCK->s_inodes_per_group,
+                EXT2_DESC_PER_BLOCK (SUPERBLOCK));
+        printf ("group_id=%d group_desc=%d desc=%d\n", group_id, group_desc, desc);
 #endif /* E2DEBUG */
-      if (!ext2_rdfsb (
-			(WHICH_SUPER + group_desc + SUPERBLOCK->s_first_data_block),
-			(int) GROUP_DESC))
-	{
-	  return 0;
-	}
-      gdp = GROUP_DESC;
-      ino_blk = gdp[desc].bg_inode_table +
-	(((current_ino - 1) % (SUPERBLOCK->s_inodes_per_group))
-	 >> log2 (EXT2_BLOCK_SIZE (SUPERBLOCK) / sizeof (struct ext2_inode)));
+        if (!ext2_rdfsb (
+                    (WHICH_SUPER + group_desc + SUPERBLOCK->s_first_data_block),
+                    (int) GROUP_DESC)) {
+            return 0;
+        }
+        gdp = GROUP_DESC;
+        ino_blk = gdp[desc].bg_inode_table +
+                  (((current_ino - 1) % (SUPERBLOCK->s_inodes_per_group))
+                   >> log2 (EXT2_BLOCK_SIZE (SUPERBLOCK) / sizeof (struct ext2_inode)));
 #ifdef E2DEBUG
-      printf ("inode table fsblock=%d\n", ino_blk);
+        printf ("inode table fsblock=%d\n", ino_blk);
 #endif /* E2DEBUG */
-      if (!ext2_rdfsb (ino_blk, (int) INODE))
-	{
-	  return 0;
-	}
+        if (!ext2_rdfsb (ino_blk, (int) INODE)) {
+            return 0;
+        }
 
-      /* reset indirect blocks! */
-      mapblock2 = mapblock1 = -1;
+        /* reset indirect blocks! */
+        mapblock2 = mapblock1 = -1;
 
-      raw_inode = INODE +
-	((current_ino - 1)
-	 & (EXT2_BLOCK_SIZE (SUPERBLOCK) / sizeof (struct ext2_inode) - 1));
+        raw_inode = INODE +
+                    ((current_ino - 1)
+                     & (EXT2_BLOCK_SIZE (SUPERBLOCK) / sizeof (struct ext2_inode) - 1));
 #ifdef E2DEBUG
-      printf ("ipb=%d, sizeof(inode)=%d\n",
-	      (EXT2_BLOCK_SIZE (SUPERBLOCK) / sizeof (struct ext2_inode)),
-	      sizeof (struct ext2_inode));
-      printf ("inode=%x, raw_inode=%x\n", INODE, raw_inode);
-      printf ("offset into inode table block=%d\n", (int) raw_inode - (int) INODE);
-      for (i = (unsigned char *) INODE; i <= (unsigned char *) raw_inode;
-	   i++)
-	{
-	  printf ("%c", "0123456789abcdef"[*i >> 4]);
-	  printf ("%c", "0123456789abcdef"[*i % 16]);
-	  if (!((i + 1 - (unsigned char *) INODE) % 16))
-	    {
-	      printf ("\n");
-	    }
-	  else
-	    {
-	      printf (" ");
-	    }
-	}
-      printf ("first word=%x\n", *((int *) raw_inode));
+        printf ("ipb=%d, sizeof(inode)=%d\n",
+                (EXT2_BLOCK_SIZE (SUPERBLOCK) / sizeof (struct ext2_inode)),
+                sizeof (struct ext2_inode));
+        printf ("inode=%x, raw_inode=%x\n", INODE, raw_inode);
+        printf ("offset into inode table block=%d\n", (int) raw_inode - (int) INODE);
+        for (i = (unsigned char *) INODE; i <= (unsigned char *) raw_inode;
+                i++) {
+            printf ("%c", "0123456789abcdef"[*i >> 4]);
+            printf ("%c", "0123456789abcdef"[*i % 16]);
+            if (!((i + 1 - (unsigned char *) INODE) % 16)) {
+                printf ("\n");
+            } else {
+                printf (" ");
+            }
+        }
+        printf ("first word=%x\n", *((int *) raw_inode));
 #endif /* E2DEBUG */
 
-      /* copy inode to fixed location */
-      memcpy ((void *) INODE, (void *) raw_inode, sizeof (struct ext2_inode));
+        /* copy inode to fixed location */
+        memcpy ((void *) INODE, (void *) raw_inode, sizeof (struct ext2_inode));
 
 #ifdef E2DEBUG
-      printf ("first word=%x\n", *((int *) INODE));
+        printf ("first word=%x\n", *((int *) INODE));
 #endif /* E2DEBUG */
 
-      /* If we've got a symbolic link, then chase it. */
-      if (S_ISLNK (INODE->i_mode))
-	{
-	  int len;
-	  if (++link_count > MAX_LINK_COUNT)
-	    {
-	      errnum = ERR_SYMLINK_LOOP;
-	      return 0;
-	    }
+        /* If we've got a symbolic link, then chase it. */
+        if (S_ISLNK (INODE->i_mode)) {
+            int len;
+            if (++link_count > MAX_LINK_COUNT) {
+                errnum = ERR_SYMLINK_LOOP;
+                return 0;
+            }
 
-	  /* Find out how long our remaining name is. */
-	  len = 0;
-	  while (dirname[len] && !isspace (dirname[len]))
-	    len++;
+            /* Find out how long our remaining name is. */
+            len = 0;
+            while (dirname[len] && !isspace (dirname[len]))
+                len++;
 
-	  /* Get the symlink size. */
-	  filemax = (INODE->i_size);
-	  if (filemax + len > sizeof (linkbuf) - 2)
-	    {
-	      errnum = ERR_FILELENGTH;
-	      return 0;
-	    }
+            /* Get the symlink size. */
+            filemax = (INODE->i_size);
+            if (filemax + len > sizeof (linkbuf) - 2) {
+                errnum = ERR_FILELENGTH;
+                return 0;
+            }
 
-	  if (len)
-	    {
-	      /* Copy the remaining name to the end of the symlink data.
-	         Note that DIRNAME and LINKBUF may overlap! */
-	      memcpy (linkbuf + filemax, dirname, len);
-	    }
-	  linkbuf[filemax + len] = '\0';
+            if (len) {
+                /* Copy the remaining name to the end of the symlink data.
+                   Note that DIRNAME and LINKBUF may overlap! */
+                memcpy (linkbuf + filemax, dirname, len);
+            }
+            linkbuf[filemax + len] = '\0';
 
-	  /* Read the symlink data. */
-	  if (! ext2_is_fast_symlink ())
-	    {
-	      /* Read the necessary blocks, and reset the file pointer. */
-	      len = grub_read (linkbuf, filemax);
-	      filepos = 0;
-	      if (!len)
-		return 0;
-	    }
-	  else
-	    {
-	      /* Copy the data directly from the inode. */
-	      len = filemax;
-	      memcpy (linkbuf, (char *) INODE->i_block, len);
-	    }
+            /* Read the symlink data. */
+            if (! ext2_is_fast_symlink ()) {
+                /* Read the necessary blocks, and reset the file pointer. */
+                len = grub_read (linkbuf, filemax);
+                filepos = 0;
+                if (!len)
+                    return 0;
+            } else {
+                /* Copy the data directly from the inode. */
+                len = filemax;
+                memcpy (linkbuf, (char *) INODE->i_block, len);
+            }
 
 #ifdef E2DEBUG
-	  printf ("symlink=%s\n", linkbuf);
+            printf ("symlink=%s\n", linkbuf);
 #endif
 
-	  dirname = linkbuf;
-	  if (*dirname == '/')
-	    {
-	      /* It's an absolute link, so look it up in root. */
-	      current_ino = EXT2_ROOT_INO;
-	      updir_ino = current_ino;
-	    }
-	  else
-	    {
-	      /* Relative, so look it up in our parent directory. */
-	      current_ino = updir_ino;
-	    }
+            dirname = linkbuf;
+            if (*dirname == '/') {
+                /* It's an absolute link, so look it up in root. */
+                current_ino = EXT2_ROOT_INO;
+                updir_ino = current_ino;
+            } else {
+                /* Relative, so look it up in our parent directory. */
+                current_ino = updir_ino;
+            }
 
-	  /* Try again using the new name. */
-	  continue;
-	}
+            /* Try again using the new name. */
+            continue;
+        }
 
-      /* if end of filename, INODE points to the file's inode */
-      if (!*dirname || isspace (*dirname))
-	{
-	  if (!S_ISREG (INODE->i_mode))
-	    {
-	      errnum = ERR_BAD_FILETYPE;
-	      return 0;
-	    }
+        /* if end of filename, INODE points to the file's inode */
+        if (!*dirname || isspace (*dirname)) {
+            if (!S_ISREG (INODE->i_mode)) {
+                errnum = ERR_BAD_FILETYPE;
+                return 0;
+            }
 
-	  filemax = (INODE->i_size);
-	  return 1;
-	}
+            filemax = (INODE->i_size);
+            return 1;
+        }
 
-      /* else we have to traverse a directory */
-      updir_ino = current_ino;
+        /* else we have to traverse a directory */
+        updir_ino = current_ino;
 
-      /* skip over slashes */
-      while (*dirname == '/')
-	dirname++;
+        /* skip over slashes */
+        while (*dirname == '/')
+            dirname++;
 
-      /* if this isn't a directory of sufficient size to hold our file, abort */
-      if (!(INODE->i_size) || !S_ISDIR (INODE->i_mode))
-	{
-	  errnum = ERR_BAD_FILETYPE;
-	  return 0;
-	}
+        /* if this isn't a directory of sufficient size to hold our file, abort */
+        if (!(INODE->i_size) || !S_ISDIR (INODE->i_mode)) {
+            errnum = ERR_BAD_FILETYPE;
+            return 0;
+        }
 
-      /* skip to next slash or end of filename (space) */
-      for (rest = dirname; (ch = *rest) && !isspace (ch) && ch != '/';
-	   rest++);
+        /* skip to next slash or end of filename (space) */
+        for (rest = dirname; (ch = *rest) && !isspace (ch) && ch != '/';
+                rest++);
 
-      /* look through this directory and find the next filename component */
-      /* invariant: rest points to slash after the next filename component */
-      *rest = 0;
-      loc = 0;
+        /* look through this directory and find the next filename component */
+        /* invariant: rest points to slash after the next filename component */
+        *rest = 0;
+        loc = 0;
 
-      do
-	{
+        do {
 
 #ifdef E2DEBUG
-	  printf ("dirname=%s, rest=%s, loc=%d\n", dirname, rest, loc);
+            printf ("dirname=%s, rest=%s, loc=%d\n", dirname, rest, loc);
 #endif /* E2DEBUG */
 
-	  /* if our location/byte offset into the directory exceeds the size,
-	     give up */
-	  if (loc >= INODE->i_size)
-	    {
-	      if (print_possibilities < 0)
-		{
+            /* if our location/byte offset into the directory exceeds the size,
+               give up */
+            if (loc >= INODE->i_size) {
+                if (print_possibilities < 0) {
 # if 0
-		  putchar ('\n');
+                    putchar ('\n');
 # endif
-		}
-	      else
-		{
-		  errnum = ERR_FILE_NOT_FOUND;
-		  *rest = ch;
-		}
-	      return (print_possibilities < 0);
-	    }
+                } else {
+                    errnum = ERR_FILE_NOT_FOUND;
+                    *rest = ch;
+                }
+                return (print_possibilities < 0);
+            }
 
-	  /* else, find the (logical) block component of our location */
-	  blk = loc >> EXT2_BLOCK_SIZE_BITS (SUPERBLOCK);
+            /* else, find the (logical) block component of our location */
+            blk = loc >> EXT2_BLOCK_SIZE_BITS (SUPERBLOCK);
 
-	  /* we know which logical block of the directory entry we are looking
-	     for, now we have to translate that to the physical (fs) block on
-	     the disk */
-	  map = ext2fs_block_map (blk);
+            /* we know which logical block of the directory entry we are looking
+               for, now we have to translate that to the physical (fs) block on
+               the disk */
+            map = ext2fs_block_map (blk);
 #ifdef E2DEBUG
-	  printf ("fs block=%d\n", map);
+            printf ("fs block=%d\n", map);
 #endif /* E2DEBUG */
-	  mapblock2 = -1;
-	  if ((map < 0) || !ext2_rdfsb (map, DATABLOCK2))
-	    {
-	      errnum = ERR_FSYS_CORRUPT;
-	      *rest = ch;
-	      return 0;
-	    }
-	  off = loc & (EXT2_BLOCK_SIZE (SUPERBLOCK) - 1);
-	  dp = (struct ext2_dir_entry *) (DATABLOCK2 + off);
-	  /* advance loc prematurely to next on-disk directory entry  */
-	  loc += dp->rec_len;
+            mapblock2 = -1;
+            if ((map < 0) || !ext2_rdfsb (map, DATABLOCK2)) {
+                errnum = ERR_FSYS_CORRUPT;
+                *rest = ch;
+                return 0;
+            }
+            off = loc & (EXT2_BLOCK_SIZE (SUPERBLOCK) - 1);
+            dp = (struct ext2_dir_entry *) (DATABLOCK2 + off);
+            /* advance loc prematurely to next on-disk directory entry  */
+            loc += dp->rec_len;
 
-	  /* NOTE: ext2fs filenames are NOT null-terminated */
+            /* NOTE: ext2fs filenames are NOT null-terminated */
 
 #ifdef E2DEBUG
-	  printf ("directory entry ino=%d\n", dp->inode);
-	  if (dp->inode)
-	    printf ("entry=%s\n", dp->name);
+            printf ("directory entry ino=%d\n", dp->inode);
+            if (dp->inode)
+                printf ("entry=%s\n", dp->name);
 #endif /* E2DEBUG */
 
-	  if (dp->inode)
-	    {
-	      int saved_c = dp->name[dp->name_len];
+            if (dp->inode) {
+                int saved_c = dp->name[dp->name_len];
 
-	      dp->name[dp->name_len] = 0;
-	      str_chk = substring (dirname, dp->name);
+                dp->name[dp->name_len] = 0;
+                str_chk = substring (dirname, dp->name);
 
 # ifndef STAGE1_5
-	      if (print_possibilities && ch != '/'
-		  && (!*dirname || str_chk <= 0))
-		{
-		  if (print_possibilities > 0)
-		    print_possibilities = -print_possibilities;
-		  print_a_completion (dp->name);
-		}
+                if (print_possibilities && ch != '/'
+                        && (!*dirname || str_chk <= 0)) {
+                    if (print_possibilities > 0)
+                        print_possibilities = -print_possibilities;
+                    print_a_completion (dp->name);
+                }
 # endif
 
-	      dp->name[dp->name_len] = saved_c;
-	    }
+                dp->name[dp->name_len] = saved_c;
+            }
 
-	}
-      while (!dp->inode || (str_chk || (print_possibilities && ch != '/')));
+        } while (!dp->inode || (str_chk || (print_possibilities && ch != '/')));
 
-      current_ino = dp->inode;
-      *(dirname = rest) = ch;
+        current_ino = dp->inode;
+        *(dirname = rest) = ch;
     }
-  /* never get here */
+    /* never get here */
 }
 
 #endif /* FSYS_EXT2_FS */

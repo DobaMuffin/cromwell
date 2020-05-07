@@ -10,7 +10,7 @@
 	CPU_FEATURE_P(cpu_info.x86_capability, LM) && \
 	CPU_FEATURE_P(cpu_info.x86_capability, PAE) && \
 	CPU_FEATURE_P(cpu_info.x86_capability, PSE))
-			
+
 #define ELF_CHECK_X86_64_ARCH(x) \
 	(EM_CURRENT_64_PRESENT && ((x).e_machine == EM_X86_64))
 #define __unused_i386
@@ -58,17 +58,17 @@
  * Section header for FreeBSD (debug symbol kludge!) support
  */
 typedef struct {
-	Elf32_Word	sh_name;	/* Section name (index into the
+    Elf32_Word	sh_name;	/* Section name (index into the
 					   section header string table). */
-	Elf32_Word	sh_type;	/* Section type. */
-	Elf32_Word	sh_flags;	/* Section flags. */
-	Elf32_Addr	sh_addr;	/* Address in memory image. */
-	Elf32_Off	sh_offset;	/* Offset in file. */
-	Elf32_Size	sh_size;	/* Size in bytes. */
-	Elf32_Word	sh_link;	/* Index of a related section. */
-	Elf32_Word	sh_info;	/* Depends on section type. */
-	Elf32_Size	sh_addralign;	/* Alignment in bytes. */
-	Elf32_Size	sh_entsize;	/* Size of each entry in section. */
+    Elf32_Word	sh_type;	/* Section type. */
+    Elf32_Word	sh_flags;	/* Section flags. */
+    Elf32_Addr	sh_addr;	/* Address in memory image. */
+    Elf32_Off	sh_offset;	/* Offset in file. */
+    Elf32_Size	sh_size;	/* Size in bytes. */
+    Elf32_Word	sh_link;	/* Index of a related section. */
+    Elf32_Word	sh_info;	/* Depends on section type. */
+    Elf32_Size	sh_addralign;	/* Alignment in bytes. */
+    Elf32_Size	sh_entsize;	/* Size of each entry in section. */
 } Elf32_Shdr;
 
 /* sh_type */

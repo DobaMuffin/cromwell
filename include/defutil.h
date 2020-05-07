@@ -1,11 +1,11 @@
 
 
 
-#define Assert(err, str) 
-#define Trace(dummy) 
-#define Tracev(dummy) 
-#define Tracecv(err, dummy) 
-#define Tracevv(dummy) 
+#define Assert(err, str)
+#define Trace(dummy)
+#define Tracev(dummy)
+#define Tracecv(err, dummy)
+#define Tracevv(dummy)
 
 
 
@@ -81,7 +81,7 @@ typedef struct deflate_state {
     Byte  method;        /* STORED (for zip only) or DEFLATED */
     int   last_flush;    /* value of flush param for previous deflate call */
 
-                /* used by deflate.c: */
+    /* used by deflate.c: */
 
     uInt  w_size;        /* LZ77 window size (32K by default) */
     uInt  w_bits;        /* log2(w_size)  (8..16) */
@@ -164,7 +164,7 @@ typedef struct deflate_state {
 
     int nice_match; /* Stop searching when current match exceeds this */
 
-                /* used by trees.c: */
+    /* used by trees.c: */
     /* Didn't use ct_data typedef below to supress compiler warning */
     struct ct_data_s dyn_ltree[HEAP_SIZE];   /* literal and length tree */
     struct ct_data_s dyn_dtree[2*D_CODES+1]; /* distance tree */
@@ -264,14 +264,14 @@ typedef struct deflate_workspace {
  * distances are limited to MAX_DIST instead of WSIZE.
  */
 
-        /* in trees.c */
+/* in trees.c */
 void zlib_tr_init         OF((deflate_state *s));
 int  zlib_tr_tally        OF((deflate_state *s, unsigned dist, unsigned lc));
 ulg  zlib_tr_flush_block  OF((deflate_state *s, charf *buf, ulg stored_len,
-			      int eof));
+                              int eof));
 void zlib_tr_align        OF((deflate_state *s));
 void zlib_tr_stored_block OF((deflate_state *s, charf *buf, ulg stored_len,
-			      int eof));
+                              int eof));
 void zlib_tr_stored_type_only OF((deflate_state *));
 
 
@@ -290,8 +290,7 @@ void zlib_tr_stored_type_only OF((deflate_state *));
  * IN assertion: 1 <= len <= 15
  */
 static inline unsigned bi_reverse(unsigned code, /* the value to invert */
-				  int len)       /* its bit length */
-{
+                                  int len) {     /* its bit length */
     register unsigned res = 0;
     do {
         res |= code & 1;
@@ -303,8 +302,7 @@ static inline unsigned bi_reverse(unsigned code, /* the value to invert */
 /* ===========================================================================
  * Flush the bit buffer, keeping at most 7 bits in it.
  */
-static inline void bi_flush(deflate_state *s)
-{
+static inline void bi_flush(deflate_state *s) {
     if (s->bi_valid == 16) {
         put_short(s, s->bi_buf);
         s->bi_buf = 0;
@@ -319,8 +317,7 @@ static inline void bi_flush(deflate_state *s)
 /* ===========================================================================
  * Flush the bit buffer and align the output on a byte boundary
  */
-static inline void bi_windup(deflate_state *s)
-{
+static inline void bi_windup(deflate_state *s) {
     if (s->bi_valid > 8) {
         put_short(s, s->bi_buf);
     } else if (s->bi_valid > 0) {

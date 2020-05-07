@@ -6,17 +6,16 @@
  * which are unsupported when booting from CD-ROM or disk.
  */
 void
-try_elf_boot (char* image, int len)
-{
-	os_download_t os_download;
+try_elf_boot (char* image, int len) {
+    os_download_t os_download;
 
-	/* do nothing if the ELF magic mismatches */
-	if (*(int*)image != 0x464c457f)
-		return;
+    /* do nothing if the ELF magic mismatches */
+    if (*(int*)image != 0x464c457f)
+        return;
 
-	os_download = probe_image (image, len);
-	if (os_download == 0)
-		return;
+    os_download = probe_image (image, len);
+    if (os_download == 0)
+        return;
 
-	os_download (image, len, 1);
+    os_download (image, len, 1);
 }

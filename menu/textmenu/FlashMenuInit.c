@@ -13,25 +13,25 @@
 #include "FlashMenuActions.h"
 
 TEXTMENU* FlashMenuInit(void) {
-	TEXTMENUITEM *itemPtr;
-	TEXTMENU *menuPtr;
-	int i=0;
+    TEXTMENUITEM *itemPtr;
+    TEXTMENU *menuPtr;
+    int i=0;
 
-	menuPtr = malloc(sizeof(TEXTMENU));
-	memset(menuPtr,0x00,sizeof(TEXTMENU));
-	strcpy(menuPtr->szCaption, "Flash Menu");
-	
-	for (i=0; i<2; ++i) {
-		if (tsaHarddiskInfo[i].m_fDriveExists && tsaHarddiskInfo[i].m_fAtapi) {
-			char *driveName=malloc(sizeof(char)*32);
-			itemPtr = malloc(sizeof(TEXTMENUITEM));
-			memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-			sprintf(itemPtr->szCaption,"Flash bios from CD-ROM (hd%c)",i ? 'b':'a');
-			itemPtr->functionPtr= FlashBiosFromCD;
-			itemPtr->functionDataPtr = malloc(sizeof(int));
-			*(int*)itemPtr->functionDataPtr = i;
-			TextMenuAddItem(menuPtr, itemPtr);
-		}
-	}
-	return menuPtr;
+    menuPtr = malloc(sizeof(TEXTMENU));
+    memset(menuPtr,0x00,sizeof(TEXTMENU));
+    strcpy(menuPtr->szCaption, "Flash Menu");
+
+    for (i=0; i<2; ++i) {
+        if (tsaHarddiskInfo[i].m_fDriveExists && tsaHarddiskInfo[i].m_fAtapi) {
+            char *driveName=malloc(sizeof(char)*32);
+            itemPtr = malloc(sizeof(TEXTMENUITEM));
+            memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+            sprintf(itemPtr->szCaption,"Flash bios from CD-ROM (hd%c)",i ? 'b':'a');
+            itemPtr->functionPtr= FlashBiosFromCD;
+            itemPtr->functionDataPtr = malloc(sizeof(int));
+            *(int*)itemPtr->functionDataPtr = i;
+            TextMenuAddItem(menuPtr, itemPtr);
+        }
+    }
+    return menuPtr;
 }

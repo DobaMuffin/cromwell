@@ -6,32 +6,32 @@
 #include "../../fs/cdrom/iso_fs.h"
 
 int main(int argc, const char * argv[]) {
-	char *buffer;
-	long max_length = 1024 * 1024 *4;
-	long bytes_read;
-	int file;
-	
-	if(argc < 2) {
-		printf("usage: readcd isofile\n");
-		return 0;
-	}
+    char *buffer;
+    long max_length = 1024 * 1024 *4;
+    long bytes_read;
+    int file;
 
-	file = open(argv[1], O_RDONLY);
-	if( file == -1) {
-		printf("error open file\n");
-		return 0;
-	}
-	buffer = (char *)malloc(max_length);
-	
-	memset(buffer, 0x0, max_length);
-	
+    if(argc < 2) {
+        printf("usage: readcd isofile\n");
+        return 0;
+    }
 
-	bytes_read = BootIso9660GetFile(file, "/", "linuxboo.cfg", max_length);
-	if(bytes_read != -1) {
-		printf("Bytes read %d\n", bytes_read);
-	}
-	
-	close(file);
-	free(buffer);
-	return 0;
+    file = open(argv[1], O_RDONLY);
+    if( file == -1) {
+        printf("error open file\n");
+        return 0;
+    }
+    buffer = (char *)malloc(max_length);
+
+    memset(buffer, 0x0, max_length);
+
+
+    bytes_read = BootIso9660GetFile(file, "/", "linuxboo.cfg", max_length);
+    if(bytes_read != -1) {
+        printf("Bytes read %d\n", bytes_read);
+    }
+
+    close(file);
+    free(buffer);
+    return 0;
 }

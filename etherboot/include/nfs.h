@@ -35,29 +35,29 @@
 #define NFS_MAXLINKDEPTH 16
 
 struct rpc_t {
-	struct iphdr ip;
-	struct udphdr udp;
-	union {
-		uint8_t  data[300];		/* longest RPC call must fit!!!! */
-		struct {
-			uint32_t id;
-			uint32_t type;
-			uint32_t rpcvers;
-			uint32_t prog;
-			uint32_t vers;
-			uint32_t proc;
-			uint32_t data[1];
-		} call;
-		struct {
-			uint32_t id;
-			uint32_t type;
-			uint32_t rstatus;
-			uint32_t verifier;
-			uint32_t v2;
-			uint32_t astatus;
-			uint32_t data[1];
-		} reply;
-	} u;
+    struct iphdr ip;
+    struct udphdr udp;
+    union {
+        uint8_t  data[300];		/* longest RPC call must fit!!!! */
+        struct {
+            uint32_t id;
+            uint32_t type;
+            uint32_t rpcvers;
+            uint32_t prog;
+            uint32_t vers;
+            uint32_t proc;
+            uint32_t data[1];
+        } call;
+        struct {
+            uint32_t id;
+            uint32_t type;
+            uint32_t rstatus;
+            uint32_t verifier;
+            uint32_t v2;
+            uint32_t astatus;
+            uint32_t data[1];
+        } reply;
+    } u;
 };
 
 #endif	/* _NFS_H */

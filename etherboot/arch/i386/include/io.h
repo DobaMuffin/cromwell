@@ -8,14 +8,12 @@ extern unsigned long virt_offset;
 /* Don't require identity mapped physical memory,
  * osloader.c is the only valid user at the moment.
  */
-static inline unsigned long virt_to_phys(volatile const void *virt_addr)
-{
-	return ((unsigned long)virt_addr) + virt_offset;
+static inline unsigned long virt_to_phys(volatile const void *virt_addr) {
+    return ((unsigned long)virt_addr) + virt_offset;
 }
 
-static inline void *phys_to_virt(unsigned long phys_addr)
-{
-	return (void *)(phys_addr - virt_offset);
+static inline void *phys_to_virt(unsigned long phys_addr) {
+    return (void *)(phys_addr - virt_offset);
 }
 
 /* virt_to_bus converts an addresss inside of etherboot [_start, _end]
@@ -33,15 +31,13 @@ static inline void *phys_to_virt(unsigned long phys_addr)
 /* ioremap converts a random 32bit bus address into something
  * etherboot can access.
  */
-static inline void *ioremap(unsigned long bus_addr, unsigned long length __unused)
-{
-	return bus_to_virt(bus_addr);
+static inline void *ioremap(unsigned long bus_addr, unsigned long length __unused) {
+    return bus_to_virt(bus_addr);
 }
 
 /* iounmap cleans up anything ioremap had to setup */
-static inline void iounmap(void *virt_addr __unused)
-{
-	return;
+static inline void iounmap(void *virt_addr __unused) {
+    return;
 }
 
 /*
@@ -114,7 +110,7 @@ static inline void iounmap(void *virt_addr __unused)
  * Some non intel clones support out of order store. wmb() ceases to be a
  * nop for these.
  */
- 
+
 #define mb() 	__asm__ __volatile__ ("lock; addl $0,0(%%esp)": : :"memory")
 #define rmb()	mb()
 #define wmb()	mb();

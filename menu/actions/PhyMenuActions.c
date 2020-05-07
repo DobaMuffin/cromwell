@@ -12,27 +12,25 @@
 
 int CurrentSerialState;
 
-int IsSerialEnabled(void)
-{
-	int result;
+int IsSerialEnabled(void) {
+    int result;
 
-	LpcEnterConfiguration();
-	result = LpcGetSerialState();
-	LpcExitConfiguration();
+    LpcEnterConfiguration();
+    result = LpcGetSerialState();
+    LpcExitConfiguration();
 
-	return (result == 1);
+    return (result == 1);
 }
 
-void SetSerialEnabled(void *menuItemText)
-{
-	char *text = (char *)menuItemText;
+void SetSerialEnabled(void *menuItemText) {
+    char *text = (char *)menuItemText;
 
-	LpcEnterConfiguration();
-	LpcSetSerialState(CurrentSerialState ? 0 : 1);
-	LpcExitConfiguration();
+    LpcEnterConfiguration();
+    LpcSetSerialState(CurrentSerialState ? 0 : 1);
+    LpcExitConfiguration();
 
-	CurrentSerialState = IsSerialEnabled();
+    CurrentSerialState = IsSerialEnabled();
 
-	strcpy(text, "Serial COM1: ");
-	strcat(text, (CurrentSerialState ? "Enabled" : "Disabled"));
+    strcpy(text, "Serial COM1: ");
+    strcat(text, (CurrentSerialState ? "Enabled" : "Disabled"));
 }

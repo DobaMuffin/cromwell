@@ -58,7 +58,7 @@
 #define  PCI_STATUS_FAST_BACK	0x80	/* Accept fast-back to back */
 #define  PCI_STATUS_PARITY	0x100	/* Detected parity error */
 #define  PCI_STATUS_DEVSEL_MASK	0x600	/* DEVSEL timing */
-#define  PCI_STATUS_DEVSEL_FAST	0x000	
+#define  PCI_STATUS_DEVSEL_FAST	0x000
 #define  PCI_STATUS_DEVSEL_MEDIUM 0x200
 #define  PCI_STATUS_DEVSEL_SLOW 0x400
 #define  PCI_STATUS_SIG_TARGET_ABORT 0x800 /* Set on target abort */
@@ -81,7 +81,7 @@
 /* Header type 0 (normal devices) */
 #define PCI_CARDBUS_CIS		0x28
 #define PCI_SUBSYSTEM_VENDOR_ID	0x2c
-#define PCI_SUBSYSTEM_ID	0x2e  
+#define PCI_SUBSYSTEM_ID	0x2e
 
 #define PCI_BASE_ADDRESS_0      0x10    /* 32 bits */
 #define PCI_BASE_ADDRESS_1      0x14    /* 32 bits */
@@ -247,15 +247,15 @@
 #define PCI_SERVICE             (('$' << 0) + ('P' << 8) + ('C' << 16) + ('I' << 24))
 
 union bios32 {
-	struct {
-		unsigned long signature;	/* _32_ */
-		unsigned long entry;		/* 32 bit physical address */
-		unsigned char revision;		/* Revision level, 0 */
-		unsigned char length;		/* Length in paragraphs should be 01 */
-		unsigned char checksum;		/* All bytes must add up to zero */
-		unsigned char reserved[5];	/* Must be zero */
-	} fields;
-	char chars[16];
+    struct {
+        unsigned long signature;	/* _32_ */
+        unsigned long entry;		/* 32 bit physical address */
+        unsigned char revision;		/* Revision level, 0 */
+        unsigned char length;		/* Length in paragraphs should be 01 */
+        unsigned char checksum;		/* All bytes must add up to zero */
+        unsigned char reserved[5];	/* Must be zero */
+    } fields;
+    char chars[16];
 };
 
 struct pci_device;
@@ -263,16 +263,16 @@ struct dev;
 typedef int (*pci_probe_t)(struct dev *, struct pci_device *);
 
 struct pci_device {
-	uint32_t		class;
-	uint16_t		vendor, dev_id;
-	const char		*name;
-	/* membase and ioaddr are silly and depricated */
-	unsigned int		membase;
-	unsigned int		ioaddr;
-	unsigned int		romaddr;
-	unsigned char		devfn;
-	unsigned char		bus;
-	const struct pci_driver	*driver;
+    uint32_t		class;
+    uint16_t		vendor, dev_id;
+    const char		*name;
+    /* membase and ioaddr are silly and depricated */
+    unsigned int		membase;
+    unsigned int		ioaddr;
+    unsigned int		romaddr;
+    unsigned char		devfn;
+    unsigned char		bus;
+    const struct pci_driver	*driver;
 };
 
 extern void scan_pci_bus(int type, struct pci_device *dev);
@@ -288,35 +288,29 @@ extern unsigned long pcibios_bus_base(unsigned int bus);
 extern void adjust_pci_device(struct pci_device *p);
 
 
-static inline int 
-pci_read_config_byte(struct pci_device *dev, unsigned int where, uint8_t *value)
-{
-	return pcibios_read_config_byte(dev->bus, dev->devfn, where, value);
+static inline int
+pci_read_config_byte(struct pci_device *dev, unsigned int where, uint8_t *value) {
+    return pcibios_read_config_byte(dev->bus, dev->devfn, where, value);
 }
-static inline int 
-pci_write_config_byte(struct pci_device *dev, unsigned int where, uint8_t value)
-{
-	return pcibios_write_config_byte(dev->bus, dev->devfn, where, value);
+static inline int
+pci_write_config_byte(struct pci_device *dev, unsigned int where, uint8_t value) {
+    return pcibios_write_config_byte(dev->bus, dev->devfn, where, value);
 }
-static inline int 
-pci_read_config_word(struct pci_device *dev, unsigned int where, uint16_t *value)
-{
-	return pcibios_read_config_word(dev->bus, dev->devfn, where, value);
+static inline int
+pci_read_config_word(struct pci_device *dev, unsigned int where, uint16_t *value) {
+    return pcibios_read_config_word(dev->bus, dev->devfn, where, value);
 }
-static inline int 
-pci_write_config_word(struct pci_device *dev, unsigned int where, uint16_t value)
-{
-	return pcibios_write_config_word(dev->bus, dev->devfn, where, value);
+static inline int
+pci_write_config_word(struct pci_device *dev, unsigned int where, uint16_t value) {
+    return pcibios_write_config_word(dev->bus, dev->devfn, where, value);
 }
-static inline int 
-pci_read_config_dword(struct pci_device *dev, unsigned int where, uint32_t *value)
-{
-	return pcibios_read_config_dword(dev->bus, dev->devfn, where, value);
+static inline int
+pci_read_config_dword(struct pci_device *dev, unsigned int where, uint32_t *value) {
+    return pcibios_read_config_dword(dev->bus, dev->devfn, where, value);
 }
-static inline int 
-pci_write_config_dword(struct pci_device *dev, unsigned int where, uint32_t value)
-{
-	return pcibios_write_config_dword(dev->bus, dev->devfn, where, value);
+static inline int
+pci_write_config_dword(struct pci_device *dev, unsigned int where, uint32_t value) {
+    return pcibios_write_config_dword(dev->bus, dev->devfn, where, value);
 }
 
 /* Helper functions to find the size of a pci bar */
@@ -325,28 +319,28 @@ extern unsigned long pci_bar_size(struct pci_device *dev, unsigned int bar);
 /* Helper function to find pci capabilities */
 extern int pci_find_capability(struct pci_device *dev, int cap);
 struct pci_id {
-	unsigned short vendor, dev_id;
-	const char *name;
+    unsigned short vendor, dev_id;
+    const char *name;
 };
 
 struct dev;
 /* Most pci drivers will use this */
 struct pci_driver {
-	int type;
-	const char *name;
-	pci_probe_t probe;
-	struct pci_id *ids;
-	int id_count;
+    int type;
+    const char *name;
+    pci_probe_t probe;
+    struct pci_id *ids;
+    int id_count;
 
-/* On a few occasions the hardware is standardized enough that
- * we only need to know the class of the device and not the exact
- * type to drive the device correctly.  If this is the case
- * set a class value other than 0.
- */
-	unsigned short class;
+    /* On a few occasions the hardware is standardized enough that
+     * we only need to know the class of the device and not the exact
+     * type to drive the device correctly.  If this is the case
+     * set a class value other than 0.
+     */
+    unsigned short class;
 };
 
-#define __pci_driver  
+#define __pci_driver
 extern struct pci_driver* pci_drivers;
 extern struct pci_driver* pci_drivers_end;
 

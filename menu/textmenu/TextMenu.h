@@ -27,24 +27,24 @@ struct TEXTMENU;
 extern int breakOutOfMenu;
 
 typedef struct TEXTMENUITEM {
-	//Menu item text
-	char szCaption[MENUCAPTIONSIZE+1];
-	//Pointer to function to run when menu item selected.
-	//If NULL, menuitem will not do anything when selected
-	void (*functionPtr) (void *);
-	//Pointer to data used by the function above.
-	void *functionDataPtr;
-	//Next / previous menu items within this menu
-	struct TEXTMENUITEM *previousMenuItem;
-	struct TEXTMENUITEM *nextMenuItem;
+    //Menu item text
+    char szCaption[MENUCAPTIONSIZE+1];
+    //Pointer to function to run when menu item selected.
+    //If NULL, menuitem will not do anything when selected
+    void (*functionPtr) (void *);
+    //Pointer to data used by the function above.
+    void *functionDataPtr;
+    //Next / previous menu items within this menu
+    struct TEXTMENUITEM *previousMenuItem;
+    struct TEXTMENUITEM *nextMenuItem;
 } TEXTMENUITEM;
 
 typedef struct TEXTMENU {
-	//Menu title e.g. "Main Menu"
-	char szCaption[MENUCAPTIONSIZE+1];
-	//A pointer to the first item of the linked list of menuitems that
-	//make up this menu.
-	TEXTMENUITEM* firstMenuItem;
+    //Menu title e.g. "Main Menu"
+    char szCaption[MENUCAPTIONSIZE+1];
+    //A pointer to the first item of the linked list of menuitems that
+    //make up this menu.
+    TEXTMENUITEM* firstMenuItem;
 } TEXTMENU;
 
 #endif

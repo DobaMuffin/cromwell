@@ -75,8 +75,7 @@
  * Flags are used to indicate the validity of fields where zero is a
  * normal value.
  */
-struct bootinfo
-  {
+struct bootinfo {
     unsigned int bi_version;
     unsigned char *bi_kernelname;
     struct nfs_diskless *bi_nfs_diskless;
@@ -92,4 +91,4 @@ struct bootinfo
     unsigned long bi_extmem;
     unsigned long bi_symtab;
     unsigned long bi_esymtab;
-  };
+};

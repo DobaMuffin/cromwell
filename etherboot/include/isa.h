@@ -9,17 +9,16 @@ struct dev;
 
 #define	GENERIC_ISAPNP_VENDOR	ISAPNP_VENDOR('P','N','P')
 
-struct isa_driver
-{
-	int type;
-	const char *name;
-	int (*probe)(struct dev *, unsigned short *);
-	unsigned short *ioaddrs;
+struct isa_driver {
+    int type;
+    const char *name;
+    int (*probe)(struct dev *, unsigned short *);
+    unsigned short *ioaddrs;
 };
 
 #ifndef __HYPERSTONE__
 #define __isa_driver	__attribute__ ((unused,__section__(".drivers.isa")))
-#else 
+#else
 #define __isa_driver	__attribute__ ((unused,__section__(".drivisa")))
 #endif
 

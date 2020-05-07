@@ -1,5 +1,5 @@
-#ifndef ELF_BOOT_H 
-#define ELF_BOOT_H 
+#ifndef ELF_BOOT_H
+#define ELF_BOOT_H
 
 
 /* This defines the structure of a table of parameters useful for ELF
@@ -23,19 +23,17 @@
 typedef uint16_t Elf_Half;
 typedef uint32_t Elf_Word;
 
-typedef struct Elf_Bhdr
-{
-	Elf_Word b_signature; /* "0x0E1FB007" */
-	Elf_Word b_size;
-	Elf_Half b_checksum;
-	Elf_Half b_records;
+typedef struct Elf_Bhdr {
+    Elf_Word b_signature; /* "0x0E1FB007" */
+    Elf_Word b_size;
+    Elf_Half b_checksum;
+    Elf_Half b_records;
 } Elf_Bhdr;
 
-typedef struct Elf_Nhdr
-{
-	Elf_Word n_namesz;		/* Length of the note's name.  */
-	Elf_Word n_descsz;		/* Length of the note's descriptor.  */
-	Elf_Word n_type;		/* Type of the note.  */
+typedef struct Elf_Nhdr {
+    Elf_Word n_namesz;		/* Length of the note's name.  */
+    Elf_Word n_descsz;		/* Length of the note's descriptor.  */
+    Elf_Word n_type;		/* Type of the note.  */
 } Elf_Nhdr;
 
 #endif /* ASSEMBLY */

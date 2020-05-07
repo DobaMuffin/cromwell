@@ -47,7 +47,7 @@
 // File attribute: hidden
 #define FATX_FILEATTR_HIDDEN 0x02
 
-// File attribute: system 
+// File attribute: system
 #define FATX_FILEATTR_SYSTEM 0x04
 
 // File attribute: archive
@@ -62,40 +62,40 @@
 // This structure describes a FATX partition
 typedef struct {
 
-  int nDriveIndex;
- 
-  // The starting byte of the partition
-  u_int64_t partitionStart;
+    int nDriveIndex;
 
-  // The size of the partition in bytes
-  u_int64_t partitionSize;
+    // The starting byte of the partition
+    u_int64_t partitionStart;
 
-  // The cluster size of the partition
-  u_int32_t clusterSize;
+    // The size of the partition in bytes
+    u_int64_t partitionSize;
 
-  // Number of clusters in the partition
-  u_int32_t clusterCount;
+    // The cluster size of the partition
+    u_int32_t clusterSize;
 
-  // Size of entries in the cluster chain map
-  u_int32_t chainMapEntrySize;
+    // Number of clusters in the partition
+    u_int32_t clusterCount;
 
-  // The cluster chain map table (which may be in words OR dwords)
-  union {
-    u_int16_t *words;
-    u_int32_t *dwords;
-  } clusterChainMap;
-  
-  // Address of cluster 1
-  u_int64_t cluster1Address;
-  
+    // Size of entries in the cluster chain map
+    u_int32_t chainMapEntrySize;
+
+    // The cluster chain map table (which may be in words OR dwords)
+    union {
+        u_int16_t *words;
+        u_int32_t *dwords;
+    } clusterChainMap;
+
+    // Address of cluster 1
+    u_int64_t cluster1Address;
+
 } FATXPartition;
 
 typedef struct {
-	char filename[FATX_FILENAME_MAX];
-	int clusterId;
-	u_int32_t fileSize;
-	u_int32_t fileRead;
-	u8 *buffer;
+    char filename[FATX_FILENAME_MAX];
+    int clusterId;
+    u_int32_t fileSize;
+    u_int32_t fileRead;
+    u8 *buffer;
 } FATXFILEINFO;
 
 int LoadFATXFilefixed(FATXPartition *partition,char *filename, FATXFILEINFO *fileinfo,u8* Position);
@@ -103,7 +103,7 @@ int LoadFATXFile(FATXPartition *partition,char *filename, FATXFILEINFO *fileinfo
 void PrintFAXPartitionTable(int nDriveIndex);
 int FATXSignature(int nDriveIndex,unsigned int block,u8 *ba);
 FATXPartition *OpenFATXPartition(int nDriveIndex,unsigned int partitionOffset,
-		                u_int64_t partitionSize);
+                                 u_int64_t partitionSize);
 int FATXRawRead (int drive, int sector, unsigned long long byte_offset, int byte_len, char *buf);
 void DumpFATXTree(FATXPartition *partition);
 void _DumpFATXTree(FATXPartition* partition, int clusterId, int nesting);

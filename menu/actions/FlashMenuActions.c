@@ -10,6 +10,6 @@
 
 void FlashBiosFromCD(void *cdromId) {
 #ifdef FLASH
-	BootLoadFlashCD(*(int *)cdromId);
+    BootLoadFlashCD(*(int *)cdromId);
 #endif
 }

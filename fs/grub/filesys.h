@@ -136,14 +136,13 @@ void tftp_close (void);
 
 /* this next part is pretty ugly, but it keeps it in one place! */
 
-struct fsys_entry
-{
-  char *name;
-  int (*mount_func) (void);
-  int (*read_func) (char *buf, int len);
-  int (*dir_func) (char *dirname);
-  void (*close_func) (void);
-  int (*embed_func) (int *start_sector, int needed_sectors);
+struct fsys_entry {
+    char *name;
+    int (*mount_func) (void);
+    int (*read_func) (char *buf, int len);
+    int (*dir_func) (char *dirname);
+    void (*close_func) (void);
+    int (*embed_func) (int *start_sector, int needed_sectors);
 };
 
 #ifdef STAGE1_5

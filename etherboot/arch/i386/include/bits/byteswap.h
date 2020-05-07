@@ -1,22 +1,20 @@
 #ifndef ETHERBOOT_BITS_BYTESWAP_H
 #define ETHERBOOT_BITS_BYTESWAP_H
 
-static inline uint16_t __i386_bswap_16(uint16_t x)
-{
-	__asm__("xchgb %b0,%h0\n\t"
-		: "=q" (x)
-		: "0" (x));
-	return x;
+static inline uint16_t __i386_bswap_16(uint16_t x) {
+    __asm__("xchgb %b0,%h0\n\t"
+            : "=q" (x)
+            : "0" (x));
+    return x;
 }
 
-static inline uint32_t __i386_bswap_32(uint32_t x)
-{
-	__asm__("xchgb %b0,%h0\n\t"
-		"rorl $16,%0\n\t"
-		"xchgb %b0,%h0"
-		: "=q" (x)
-		: "0" (x));
-	return x;
+static inline uint32_t __i386_bswap_32(uint32_t x) {
+    __asm__("xchgb %b0,%h0\n\t"
+            "rorl $16,%0\n\t"
+            "xchgb %b0,%h0"
+            : "=q" (x)
+            : "0" (x));
+    return x;
 }
 
 

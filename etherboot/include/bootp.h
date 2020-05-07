@@ -117,39 +117,38 @@
 
 /* Format of a bootp packet */
 struct bootp_t {
-	uint8_t  bp_op;
-	uint8_t  bp_htype;
-	uint8_t  bp_hlen;
-	uint8_t  bp_hops;
-	uint32_t bp_xid;
-	uint16_t bp_secs;
-	uint16_t unused;
-	in_addr bp_ciaddr;
-	in_addr bp_yiaddr;
-	in_addr bp_siaddr;
-	in_addr bp_giaddr;
-	uint8_t  bp_hwaddr[16];
-	uint8_t  bp_sname[64];
-	char     bp_file[128];
+    uint8_t  bp_op;
+    uint8_t  bp_htype;
+    uint8_t  bp_hlen;
+    uint8_t  bp_hops;
+    uint32_t bp_xid;
+    uint16_t bp_secs;
+    uint16_t unused;
+    in_addr bp_ciaddr;
+    in_addr bp_yiaddr;
+    in_addr bp_siaddr;
+    in_addr bp_giaddr;
+    uint8_t  bp_hwaddr[16];
+    uint8_t  bp_sname[64];
+    char     bp_file[128];
 #ifdef	NO_DHCP_SUPPORT
-	uint8_t  bp_vend[BOOTP_VENDOR_LEN];
+    uint8_t  bp_vend[BOOTP_VENDOR_LEN];
 #else
-	uint8_t  bp_vend[DHCP_OPT_LEN];
+    uint8_t  bp_vend[DHCP_OPT_LEN];
 #endif	/* NO_DHCP_SUPPORT */
 };
 
 /* Format of a bootp IP packet */
-struct bootpip_t
-{
-	struct iphdr ip;
-	struct udphdr udp;
-	struct bootp_t bp;
+struct bootpip_t {
+    struct iphdr ip;
+    struct udphdr udp;
+    struct bootp_t bp;
 };
 
 /* Format of bootp packet with extensions */
 struct bootpd_t {
-	struct bootp_t bootp_reply;
-	uint8_t bootp_extension[MAX_BOOTP_EXTLEN];
+    struct bootp_t bootp_reply;
+    uint8_t bootp_extension[MAX_BOOTP_EXTLEN];
 };
 
 #endif	/* _BOOTP_H */

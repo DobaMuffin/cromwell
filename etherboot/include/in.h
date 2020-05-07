@@ -13,7 +13,7 @@
 #define IP_BROADCAST	0xFFFFFFFF
 
 typedef struct {
-	uint32_t	s_addr;
+    uint32_t	s_addr;
 } in_addr;
 
 #endif	/* _IN_H */

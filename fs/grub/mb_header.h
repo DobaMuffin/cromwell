@@ -21,33 +21,32 @@
  *  MultiBoot Header description
  */
 
-struct multiboot_header
-{
-  /* Must be MULTIBOOT_MAGIC - see below.  */
-  unsigned magic;
-  
-  /* Feature flags - see below.  */
-  unsigned flags;
-  
-  /*
-   * Checksum
-   *
-   * The above fields plus this one must equal 0 mod 2^32.
-   */
-  unsigned checksum;
-  
-  /* These are only valid if MULTIBOOT_AOUT_KLUDGE is set.  */
-  unsigned header_addr;
-  unsigned load_addr;
-  unsigned load_end_addr;
-  unsigned bss_end_addr;
-  unsigned entry_addr;
+struct multiboot_header {
+    /* Must be MULTIBOOT_MAGIC - see below.  */
+    unsigned magic;
 
-  /* These are only valid if MULTIBOOT_VIDEO_MODE is set.  */
-  unsigned mode_type;
-  unsigned width;
-  unsigned height;
-  unsigned depth;
+    /* Feature flags - see below.  */
+    unsigned flags;
+
+    /*
+     * Checksum
+     *
+     * The above fields plus this one must equal 0 mod 2^32.
+     */
+    unsigned checksum;
+
+    /* These are only valid if MULTIBOOT_AOUT_KLUDGE is set.  */
+    unsigned header_addr;
+    unsigned load_addr;
+    unsigned load_end_addr;
+    unsigned bss_end_addr;
+    unsigned entry_addr;
+
+    /* These are only valid if MULTIBOOT_VIDEO_MODE is set.  */
+    unsigned mode_type;
+    unsigned width;
+    unsigned height;
+    unsigned depth;
 };
 
 /*

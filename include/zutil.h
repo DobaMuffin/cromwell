@@ -29,7 +29,7 @@ typedef unsigned short ush;
 typedef ush FAR ushf;
 typedef unsigned long  ulg;
 
-        /* common constants */
+/* common constants */
 
 #ifndef DEF_WBITS
 #  define DEF_WBITS MAX_WBITS
@@ -54,21 +54,21 @@ typedef unsigned long  ulg;
 
 #define PRESET_DICT 0x20 /* preset dictionary flag in zlib header */
 
-        /* target dependencies */
+/* target dependencies */
 
-        /* Common defaults */
+/* Common defaults */
 
 #ifndef OS_CODE
 #  define OS_CODE  0x03  /* assume Unix */
 #endif
 
-         /* functions */
+/* functions */
 
 typedef uLong (ZEXPORT *check_func) OF((uLong check, const Bytef *buf,
-				       uInt len));
+                                        uInt len));
 
 
-                        /* checksum functions */
+/* checksum functions */
 
 #define BASE 65521L /* largest prime smaller than 65536 */
 #define NMAX 5552
@@ -96,9 +96,8 @@ typedef uLong (ZEXPORT *check_func) OF((uLong check, const Bytef *buf,
      if (adler != original_adler) error();
 */
 static inline uLong zlib_adler32(uLong adler,
-				 const Bytef *buf,
-				 uInt len)
-{
+                                 const Bytef *buf,
+                                 uInt len) {
     unsigned long s1 = adler & 0xffff;
     unsigned long s2 = (adler >> 16) & 0xffff;
     int k;
@@ -110,13 +109,13 @@ static inline uLong zlib_adler32(uLong adler,
         len -= k;
         while (k >= 16) {
             DO16(buf);
-	    buf += 16;
+            buf += 16;
             k -= 16;
         }
         if (k != 0) do {
-            s1 += *buf++;
-	    s2 += s1;
-        } while (--k);
+                s1 += *buf++;
+                s2 += s1;
+            } while (--k);
         s1 %= BASE;
         s2 %= BASE;
     }

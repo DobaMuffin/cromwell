@@ -1,12 +1,12 @@
 /*
  * OHCI HCD (Host Controller Driver) for USB.
- * 
+ *
  * (C) Copyright 1999 Roman Weissgaerber <weissg@vienna.at>
  * (C) Copyright 2000-2002 David Brownell <dbrownell@users.sourceforge.net>
- * 
+ *
  * This file is licenced under the GPL.
  */
- 
+
 /*
  * OHCI Endpoint Descriptor (ED) ... holds TD queue
  * See OHCI spec, section 4.2
@@ -15,77 +15,77 @@
  * both EHCI and UHCI call similar structures a "QH".
  */
 struct ed {
-	/* first fields are hardware-specified, le32 */
-	__u32			hwINFO;       	/* endpoint config bitmap */
-	/* info bits defined by hcd */
+    /* first fields are hardware-specified, le32 */
+    __u32			hwINFO;       	/* endpoint config bitmap */
+    /* info bits defined by hcd */
 #define ED_DEQUEUE	__constant_cpu_to_le32(1 << 27)
-	/* info bits defined by the hardware */
+    /* info bits defined by the hardware */
 #define ED_ISO		__constant_cpu_to_le32(1 << 15)
 #define ED_SKIP		__constant_cpu_to_le32(1 << 14)
 #define ED_LOWSPEED	__constant_cpu_to_le32(1 << 13)
 #define ED_OUT		__constant_cpu_to_le32(0x01 << 11)
 #define ED_IN		__constant_cpu_to_le32(0x02 << 11)
-	__u32			hwTailP;	/* tail of TD list */
-	__u32			hwHeadP;	/* head of TD list (hc r/w) */
+    __u32			hwTailP;	/* tail of TD list */
+    __u32			hwHeadP;	/* head of TD list (hc r/w) */
 #define ED_C		__constant_cpu_to_le32(0x02)	/* toggle carry */
 #define ED_H		__constant_cpu_to_le32(0x01)	/* halted */
-	__u32			hwNextED;	/* next ED in list */
+    __u32			hwNextED;	/* next ED in list */
 
-	/* rest are purely for the driver's use */
-	dma_addr_t		dma;		/* addr of ED */
-	struct td		*dummy;		/* next TD to activate */
+    /* rest are purely for the driver's use */
+    dma_addr_t		dma;		/* addr of ED */
+    struct td		*dummy;		/* next TD to activate */
 
-	/* host's view of schedule */
-	struct ed		*ed_next;	/* on schedule or rm_list */
-	struct ed		*ed_prev;	/* for non-interrupt EDs */
-	struct list_head	td_list;	/* "shadow list" of our TDs */
+    /* host's view of schedule */
+    struct ed		*ed_next;	/* on schedule or rm_list */
+    struct ed		*ed_prev;	/* for non-interrupt EDs */
+    struct list_head	td_list;	/* "shadow list" of our TDs */
 
-	/* create --> IDLE --> OPER --> ... --> IDLE --> destroy
-	 * usually:  OPER --> UNLINK --> (IDLE | OPER) --> ...
-	 * some special cases :  OPER --> IDLE ...
-	 */
-	u8			state;		/* ED_{IDLE,UNLINK,OPER} */
+    /* create --> IDLE --> OPER --> ... --> IDLE --> destroy
+     * usually:  OPER --> UNLINK --> (IDLE | OPER) --> ...
+     * some special cases :  OPER --> IDLE ...
+     */
+    u8			state;		/* ED_{IDLE,UNLINK,OPER} */
 #define ED_IDLE 	0x00		/* NOT linked to HC */
 #define ED_UNLINK 	0x01		/* being unlinked from hc */
 #define ED_OPER		0x02		/* IS linked to hc */
 
-	u8			type; 		/* PIPE_{BULK,...} */
+    u8			type; 		/* PIPE_{BULK,...} */
 
-	/* periodic scheduling params (for intr and iso) */
-	u8			branch;
-	u16			interval;
-	u16			load;
-	u16			last_iso;	/* iso only */
+    /* periodic scheduling params (for intr and iso) */
+    u8			branch;
+    u16			interval;
+    u16			load;
+    u16			last_iso;	/* iso only */
 
-	/* HC may see EDs on rm_list until next frame (frame_no == tick) */
-	u16			tick;
+    /* HC may see EDs on rm_list until next frame (frame_no == tick) */
+    u16			tick;
 } __attribute__ ((aligned(16)));
 
 #define ED_MASK	((u32)~0x0f)		/* strip hw status in low addr bits */
 
- 
+
 /*
  * OHCI Transfer Descriptor (TD) ... one per transfer segment
  * See OHCI spec, sections 4.3.1 (general = control/bulk/interrupt)
  * and 4.3.2 (iso)
  */
 struct td {
-	/* first fields are hardware-specified, le32 */
-	__u32		hwINFO;		/* transfer info bitmask */
+    /* first fields are hardware-specified, le32 */
+    __u32		hwINFO;		/* transfer info bitmask */
 
-	/* hwINFO bits for both general and iso tds: */
+    /* hwINFO bits for both general and iso tds: */
 #define TD_CC       0xf0000000			/* condition code */
 #define TD_CC_GET(td_p) ((td_p >>28) & 0x0f)
 //#define TD_CC_SET(td_p, cc) (td_p) = ((td_p) & 0x0fffffff) | (((cc) & 0x0f) << 28)
 #define TD_DI       0x00E00000			/* frames before interrupt */
 #define TD_DI_SET(X) (((X) & 0x07)<< 21)
-	/* these two bits are available for definition/use by HCDs in both
-	 * general and iso tds ... others are available for only one type
-	 */
+    /* these two bits are available for definition/use by HCDs in both
+     * general and iso tds ... others are available for only one type
+     */
 #define TD_DONE     0x00020000			/* retired to donelist */
 #define TD_ISO      0x00010000			/* copy of ED_ISO */
 
-	/* hwINFO bits for general tds: */
+    /* hwINFO bits for general tds: */
 #define TD_EC       0x0C000000			/* error count */
 #define TD_T        0x03000000			/* data toggle state */
 #define TD_T_DATA0  0x02000000				/* DATA0 */
@@ -95,30 +95,30 @@ struct td {
 #define TD_DP_SETUP 0x00000000			/* SETUP pid */
 #define TD_DP_IN    0x00100000				/* IN pid */
 #define TD_DP_OUT   0x00080000				/* OUT pid */
-							/* 0x00180000 rsvd */
+    /* 0x00180000 rsvd */
 #define TD_R        0x00040000			/* round: short packets OK? */
 
-	/* (no hwINFO #defines yet for iso tds) */
+    /* (no hwINFO #defines yet for iso tds) */
 
-  	__u32		hwCBP;		/* Current Buffer Pointer (or 0) */
-  	__u32		hwNextTD;	/* Next TD Pointer */
-  	__u32		hwBE;		/* Memory Buffer End Pointer */
+    __u32		hwCBP;		/* Current Buffer Pointer (or 0) */
+    __u32		hwNextTD;	/* Next TD Pointer */
+    __u32		hwBE;		/* Memory Buffer End Pointer */
 
-	/* PSW is only for ISO */
+    /* PSW is only for ISO */
 #define MAXPSW 1		/* hardware allows 8 */
-  	__u16		hwPSW [MAXPSW];
+    __u16		hwPSW [MAXPSW];
 
-	/* rest are purely for the driver's use */
-  	__u8		index;
-  	struct ed	*ed;
-  	struct td	*td_hash;	/* dma-->td hashtable */
-  	struct td	*next_dl_td;
-  	struct urb	*urb;
+    /* rest are purely for the driver's use */
+    __u8		index;
+    struct ed	*ed;
+    struct td	*td_hash;	/* dma-->td hashtable */
+    struct td	*next_dl_td;
+    struct urb	*urb;
 
-	dma_addr_t	td_dma;		/* addr of this TD */
-	dma_addr_t	data_dma;	/* addr of data it points to */
+    dma_addr_t	td_dma;		/* addr of this TD */
+    dma_addr_t	data_dma;	/* addr of data it points to */
 
-	struct list_head td_list;	/* "shadow list", TDs on same ED */
+    struct list_head td_list;	/* "shadow list", TDs on same ED */
 } __attribute__ ((aligned(32)));	/* c/b/i need 16; only iso needs 32 */
 
 #define TD_MASK	((u32)~0x1f)		/* strip hw status in low addr bits */
@@ -136,31 +136,31 @@ struct td {
 #define TD_UNEXPECTEDPID   0x07
 #define TD_DATAOVERRUN     0x08
 #define TD_DATAUNDERRUN    0x09
-    /* 0x0A, 0x0B reserved for hardware */
+/* 0x0A, 0x0B reserved for hardware */
 #define TD_BUFFEROVERRUN   0x0C
 #define TD_BUFFERUNDERRUN  0x0D
-    /* 0x0E, 0x0F reserved for HCD */
+/* 0x0E, 0x0F reserved for HCD */
 #define TD_NOTACCESSED     0x0F
 
 
-/* map OHCI TD status codes (CC) to errno values */ 
-static const int cc_to_error [16] = { 
-	/* No  Error  */               0,
-	/* CRC Error  */               -EILSEQ,
-	/* Bit Stuff  */               -EPROTO,
-	/* Data Togg  */               -EILSEQ,
-	/* Stall      */               -EPIPE,
-	/* DevNotResp */               -ETIMEDOUT,
-	/* PIDCheck   */               -EPROTO,
-	/* UnExpPID   */               -EPROTO,
-	/* DataOver   */               -EOVERFLOW,
-	/* DataUnder  */               -EREMOTEIO,
-	/* (for hw)   */               -EIO,
-	/* (for hw)   */               -EIO,
-	/* BufferOver */               -ECOMM,
-	/* BuffUnder  */               -ENOSR,
-	/* (for HCD)  */               -EALREADY,
-	/* (for HCD)  */               -EALREADY 
+/* map OHCI TD status codes (CC) to errno values */
+static const int cc_to_error [16] = {
+    /* No  Error  */               0,
+    /* CRC Error  */               -EILSEQ,
+    /* Bit Stuff  */               -EPROTO,
+    /* Data Togg  */               -EILSEQ,
+    /* Stall      */               -EPIPE,
+    /* DevNotResp */               -ETIMEDOUT,
+    /* PIDCheck   */               -EPROTO,
+    /* UnExpPID   */               -EPROTO,
+    /* DataOver   */               -EOVERFLOW,
+    /* DataUnder  */               -EREMOTEIO,
+    /* (for hw)   */               -EIO,
+    /* (for hw)   */               -EIO,
+    /* BufferOver */               -ECOMM,
+    /* BuffUnder  */               -ENOSR,
+    /* (for HCD)  */               -EALREADY,
+    /* (for HCD)  */               -EALREADY
 };
 
 
@@ -171,55 +171,55 @@ static const int cc_to_error [16] = {
  */
 struct ohci_hcca {
 #define NUM_INTS 32
-	__u32	int_table [NUM_INTS];	/* periodic schedule */
-	__u16	frame_no;		/* current frame number */
-	__u16	pad1;			/* set to 0 on each frame_no change */
-	__u32	done_head;		/* info returned for an interrupt */
-	u8	reserved_for_hc [116];
-	u8	what [4];		/* spec only identifies 252 bytes :) */
+    __u32	int_table [NUM_INTS];	/* periodic schedule */
+    __u16	frame_no;		/* current frame number */
+    __u16	pad1;			/* set to 0 on each frame_no change */
+    __u32	done_head;		/* info returned for an interrupt */
+    u8	reserved_for_hc [116];
+    u8	what [4];		/* spec only identifies 252 bytes :) */
 } __attribute__ ((aligned(256)));
 
-  
+
 /*
  * This is the structure of the OHCI controller's memory mapped I/O region.
  * You must use readl() and writel() (in <asm/io.h>) to access these fields!!
  * Layout is in section 7 (and appendix B) of the spec.
  */
 struct ohci_regs {
-	/* control and status registers (section 7.1) */
-	__u32	revision;
-	__u32	control;
-	__u32	cmdstatus;
-	__u32	intrstatus;
-	__u32	intrenable;
-	__u32	intrdisable;
+    /* control and status registers (section 7.1) */
+    __u32	revision;
+    __u32	control;
+    __u32	cmdstatus;
+    __u32	intrstatus;
+    __u32	intrenable;
+    __u32	intrdisable;
 
-	/* memory pointers (section 7.2) */
-	__u32	hcca;
-	__u32	ed_periodcurrent;
-	__u32	ed_controlhead;
-	__u32	ed_controlcurrent;
-	__u32	ed_bulkhead;
-	__u32	ed_bulkcurrent;
-	__u32	donehead;
+    /* memory pointers (section 7.2) */
+    __u32	hcca;
+    __u32	ed_periodcurrent;
+    __u32	ed_controlhead;
+    __u32	ed_controlcurrent;
+    __u32	ed_bulkhead;
+    __u32	ed_bulkcurrent;
+    __u32	donehead;
 
-	/* frame counters (section 7.3) */
-	__u32	fminterval;
-	__u32	fmremaining;
-	__u32	fmnumber;
-	__u32	periodicstart;
-	__u32	lsthresh;
+    /* frame counters (section 7.3) */
+    __u32	fminterval;
+    __u32	fmremaining;
+    __u32	fmnumber;
+    __u32	periodicstart;
+    __u32	lsthresh;
 
-	/* Root hub ports (section 7.4) */
-	struct	ohci_roothub_regs {
-		__u32	a;
-		__u32	b;
-		__u32	status;
+    /* Root hub ports (section 7.4) */
+    struct	ohci_roothub_regs {
+        __u32	a;
+        __u32	b;
+        __u32	status;
 #define MAX_ROOT_PORTS	15	/* maximum OHCI root hub ports (RH_A_NDP) */
-		__u32	portstatus [MAX_ROOT_PORTS];
-	} roothub;
+        __u32	portstatus [MAX_ROOT_PORTS];
+    } roothub;
 
-	/* and optional "legacy support" registers (appendix B) at 0x0100 */
+    /* and optional "legacy support" registers (appendix B) at 0x0100 */
 
 } __attribute__ ((aligned(32)));
 
@@ -272,7 +272,7 @@ struct ohci_regs {
 
 
 /* OHCI ROOT HUB REGISTER MASKS */
- 
+
 /* roothub.portstatus [i] bits */
 #define RH_PS_CCS            0x00000001   	/* current connect status */
 #define RH_PS_PES            0x00000002   	/* port enable status*/
@@ -311,18 +311,18 @@ struct ohci_regs {
 
 /* hcd-private per-urb state */
 typedef struct urb_priv {
-	struct ed		*ed;
-	__u16			length;		// # tds in this request
-	__u16			td_cnt;		// tds already serviced
-	int   			state;
-	struct td		*td [0];	// all TDs in this request
+    struct ed		*ed;
+    __u16			length;		// # tds in this request
+    __u16			td_cnt;		// tds already serviced
+    int   			state;
+    struct td		*td [0];	// all TDs in this request
 
 } urb_priv_t;
 
 #define URB_DEL 1
 
 #define TD_HASH_SIZE    64    /* power'o'two */
-// sizeof (struct td) ~= 64 == 2^6 ... 
+// sizeof (struct td) ~= 64 == 2^6 ...
 #define TD_HASH_FUNC(td_dma) ((td_dma ^ (td_dma >> 6)) % TD_HASH_SIZE)
 
 
@@ -334,51 +334,51 @@ typedef struct urb_priv {
  */
 
 struct ohci_hcd {
-	spinlock_t		lock;
+    spinlock_t		lock;
 
-	/*
-	 * I/O memory used to communicate with the HC (dma-consistent)
-	 */
-	struct ohci_regs	*regs;
+    /*
+     * I/O memory used to communicate with the HC (dma-consistent)
+     */
+    struct ohci_regs	*regs;
 
-	/*
-	 * main memory used to communicate with the HC (dma-consistent).
-	 * hcd adds to schedule for a live hc any time, but removals finish
-	 * only at the start of the next frame.
-	 */
-	struct ohci_hcca	*hcca;
-	dma_addr_t		hcca_dma;
+    /*
+     * main memory used to communicate with the HC (dma-consistent).
+     * hcd adds to schedule for a live hc any time, but removals finish
+     * only at the start of the next frame.
+     */
+    struct ohci_hcca	*hcca;
+    dma_addr_t		hcca_dma;
 
-	struct ed		*ed_rm_list;		/* to be removed */
+    struct ed		*ed_rm_list;		/* to be removed */
 
-	struct ed		*ed_bulktail;		/* last in bulk list */
-	struct ed		*ed_controltail;	/* last in ctrl list */
- 	struct ed		*periodic [NUM_INTS];	/* shadow int_table */
+    struct ed		*ed_bulktail;		/* last in bulk list */
+    struct ed		*ed_controltail;	/* last in ctrl list */
+    struct ed		*periodic [NUM_INTS];	/* shadow int_table */
 
-	/*
-	 * memory management for queue data structures
-	 */
-	struct pci_pool		*td_cache;
-	struct pci_pool		*ed_cache;
-	struct td		*td_hash [TD_HASH_SIZE];
+    /*
+     * memory management for queue data structures
+     */
+    struct pci_pool		*td_cache;
+    struct pci_pool		*ed_cache;
+    struct td		*td_hash [TD_HASH_SIZE];
 
-	/*
-	 * driver state
-	 */
-	int			disabled;	/* e.g. got a UE, we're hung */
-	int			sleeping;
-	int			load [NUM_INTS];
-	u32 			hc_control;	/* copy of hc control reg */
+    /*
+     * driver state
+     */
+    int			disabled;	/* e.g. got a UE, we're hung */
+    int			sleeping;
+    int			load [NUM_INTS];
+    u32 			hc_control;	/* copy of hc control reg */
 
-	unsigned long		flags;		/* for HC bugs */
+    unsigned long		flags;		/* for HC bugs */
 #define	OHCI_QUIRK_AMD756	0x01			/* erratum #4 */
 #define	OHCI_QUIRK_SUPERIO	0x02			/* natsemi */
-	// there are also chip quirks/bugs in init logic
+    // there are also chip quirks/bugs in init logic
 
-	/*
-	 * framework state
-	 */
-	struct usb_hcd		hcd;
+    /*
+     * framework state
+     */
+    struct usb_hcd		hcd;
 };
 
 #define hcd_to_ohci(hcd_ptr) container_of(hcd_ptr, struct ohci_hcd, hcd)

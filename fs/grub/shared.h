@@ -383,121 +383,117 @@ extern char *grub_scratch_mem;
 #include "mb_info.h"
 
 /* For the Linux/i386 boot protocol version 2.03.  */
-struct linux_kernel_header
-{
-  char code1[0x0020];
-  unsigned short cl_magic;		/* Magic number 0xA33F */
-  unsigned short cl_offset;		/* The offset of command line */
-  char code2[0x01F1 - 0x0020 - 2 - 2];
-  unsigned char setup_sects;		/* The size of the setup in sectors */
-  unsigned short root_flags;		/* If the root is mounted readonly */
-  unsigned short syssize;		/* obsolete */
-  unsigned short swap_dev;		/* obsolete */
-  unsigned short ram_size;		/* obsolete */
-  unsigned short vid_mode;		/* Video mode control */
-  unsigned short root_dev;		/* Default root device number */
-  unsigned short boot_flag;		/* 0xAA55 magic number */
-  unsigned short jump;			/* Jump instruction */
-  unsigned long header;			/* Magic signature "HdrS" */
-  unsigned short version;		/* Boot protocol version supported */
-  unsigned long realmode_swtch;		/* Boot loader hook */
-  unsigned long start_sys;		/* Points to kernel version string */
-  unsigned char type_of_loader;		/* Boot loader identifier */
-  unsigned char loadflags;		/* Boot protocol option flags */
-  unsigned short setup_move_size;	/* Move to high memory size */
-  unsigned long code32_start;		/* Boot loader hook */
-  unsigned long ramdisk_image;		/* initrd load address */
-  unsigned long ramdisk_size;		/* initrd size */
-  unsigned long bootsect_kludge;	/* obsolete */
-  unsigned short heap_end_ptr;		/* Free memory after setup end */
-  unsigned short pad1;			/* Unused */
-  char *cmd_line_ptr;			/* Points to the kernel command line */
-  unsigned long initrd_addr_max;	/* The highest address of initrd */
+struct linux_kernel_header {
+    char code1[0x0020];
+    unsigned short cl_magic;		/* Magic number 0xA33F */
+    unsigned short cl_offset;		/* The offset of command line */
+    char code2[0x01F1 - 0x0020 - 2 - 2];
+    unsigned char setup_sects;		/* The size of the setup in sectors */
+    unsigned short root_flags;		/* If the root is mounted readonly */
+    unsigned short syssize;		/* obsolete */
+    unsigned short swap_dev;		/* obsolete */
+    unsigned short ram_size;		/* obsolete */
+    unsigned short vid_mode;		/* Video mode control */
+    unsigned short root_dev;		/* Default root device number */
+    unsigned short boot_flag;		/* 0xAA55 magic number */
+    unsigned short jump;			/* Jump instruction */
+    unsigned long header;			/* Magic signature "HdrS" */
+    unsigned short version;		/* Boot protocol version supported */
+    unsigned long realmode_swtch;		/* Boot loader hook */
+    unsigned long start_sys;		/* Points to kernel version string */
+    unsigned char type_of_loader;		/* Boot loader identifier */
+    unsigned char loadflags;		/* Boot protocol option flags */
+    unsigned short setup_move_size;	/* Move to high memory size */
+    unsigned long code32_start;		/* Boot loader hook */
+    unsigned long ramdisk_image;		/* initrd load address */
+    unsigned long ramdisk_size;		/* initrd size */
+    unsigned long bootsect_kludge;	/* obsolete */
+    unsigned short heap_end_ptr;		/* Free memory after setup end */
+    unsigned short pad1;			/* Unused */
+    char *cmd_line_ptr;			/* Points to the kernel command line */
+    unsigned long initrd_addr_max;	/* The highest address of initrd */
 } __attribute__ ((packed));
 
 /* Memory map address range descriptor used by GET_MMAP_ENTRY. */
-struct mmar_desc
-{
-  unsigned long desc_len;	/* Size of this descriptor. */
-  unsigned long long addr;	/* Base address. */
-  unsigned long long length;	/* Length in bytes. */
-  unsigned long type;		/* Type of address range. */
+struct mmar_desc {
+    unsigned long desc_len;	/* Size of this descriptor. */
+    unsigned long long addr;	/* Base address. */
+    unsigned long long length;	/* Length in bytes. */
+    unsigned long type;		/* Type of address range. */
 } __attribute__ ((packed));
 
 /* VBE controller information.  */
-struct vbe_controller
-{
-  unsigned char signature[4];
-  unsigned short version;
-  unsigned long oem_string;
-  unsigned long capabilities;
-  unsigned long video_mode;
-  unsigned short total_memory;
-  unsigned short oem_software_rev;
-  unsigned long oem_vendor_name;
-  unsigned long oem_product_name;
-  unsigned long oem_product_rev;
-  unsigned char reserved[222];
-  unsigned char oem_data[256];
+struct vbe_controller {
+    unsigned char signature[4];
+    unsigned short version;
+    unsigned long oem_string;
+    unsigned long capabilities;
+    unsigned long video_mode;
+    unsigned short total_memory;
+    unsigned short oem_software_rev;
+    unsigned long oem_vendor_name;
+    unsigned long oem_product_name;
+    unsigned long oem_product_rev;
+    unsigned char reserved[222];
+    unsigned char oem_data[256];
 } __attribute__ ((packed));
 
 /* VBE mode information.  */
-struct vbe_mode
-{
-  unsigned short mode_attributes;
-  unsigned char win_a_attributes;
-  unsigned char win_b_attributes;
-  unsigned short win_granularity;
-  unsigned short win_size;
-  unsigned short win_a_segment;
-  unsigned short win_b_segment;
-  unsigned long win_func;
-  unsigned short bytes_per_scanline;
+struct vbe_mode {
+    unsigned short mode_attributes;
+    unsigned char win_a_attributes;
+    unsigned char win_b_attributes;
+    unsigned short win_granularity;
+    unsigned short win_size;
+    unsigned short win_a_segment;
+    unsigned short win_b_segment;
+    unsigned long win_func;
+    unsigned short bytes_per_scanline;
 
-  /* >=1.2 */
-  unsigned short x_resolution;
-  unsigned short y_resolution;
-  unsigned char x_char_size;
-  unsigned char y_char_size;
-  unsigned char number_of_planes;
-  unsigned char bits_per_pixel;
-  unsigned char number_of_banks;
-  unsigned char memory_model;
-  unsigned char bank_size;
-  unsigned char number_of_image_pages;
-  unsigned char reserved0;
+    /* >=1.2 */
+    unsigned short x_resolution;
+    unsigned short y_resolution;
+    unsigned char x_char_size;
+    unsigned char y_char_size;
+    unsigned char number_of_planes;
+    unsigned char bits_per_pixel;
+    unsigned char number_of_banks;
+    unsigned char memory_model;
+    unsigned char bank_size;
+    unsigned char number_of_image_pages;
+    unsigned char reserved0;
 
-  /* direct color */
-  unsigned char red_mask_size;
-  unsigned char red_field_position;
-  unsigned char green_mask_size;
-  unsigned char green_field_position;
-  unsigned char blue_mask_size;
-  unsigned char blue_field_position;
-  unsigned char reserved_mask_size;
-  unsigned char reserved_field_position;
-  unsigned char direct_color_mode_info;
+    /* direct color */
+    unsigned char red_mask_size;
+    unsigned char red_field_position;
+    unsigned char green_mask_size;
+    unsigned char green_field_position;
+    unsigned char blue_mask_size;
+    unsigned char blue_field_position;
+    unsigned char reserved_mask_size;
+    unsigned char reserved_field_position;
+    unsigned char direct_color_mode_info;
 
-  /* >=2.0 */
-  unsigned long phys_base;
-  unsigned long reserved1;
-  unsigned short reversed2;
+    /* >=2.0 */
+    unsigned long phys_base;
+    unsigned long reserved1;
+    unsigned short reversed2;
 
-  /* >=3.0 */
-  unsigned short linear_bytes_per_scanline;
-  unsigned char banked_number_of_image_pages;
-  unsigned char linear_number_of_image_pages;
-  unsigned char linear_red_mask_size;
-  unsigned char linear_red_field_position;
-  unsigned char linear_green_mask_size;
-  unsigned char linear_green_field_position;
-  unsigned char linear_blue_mask_size;
-  unsigned char linear_blue_field_position;
-  unsigned char linear_reserved_mask_size;
-  unsigned char linear_reserved_field_position;
-  unsigned long max_pixel_clock;
+    /* >=3.0 */
+    unsigned short linear_bytes_per_scanline;
+    unsigned char banked_number_of_image_pages;
+    unsigned char linear_number_of_image_pages;
+    unsigned char linear_red_mask_size;
+    unsigned char linear_red_field_position;
+    unsigned char linear_green_mask_size;
+    unsigned char linear_green_field_position;
+    unsigned char linear_blue_mask_size;
+    unsigned char linear_blue_field_position;
+    unsigned char linear_reserved_mask_size;
+    unsigned char linear_reserved_field_position;
+    unsigned long max_pixel_clock;
 
-  unsigned char reserved3[189];
+    unsigned char reserved3[189];
 } __attribute__ ((packed));
 
 
@@ -505,46 +501,45 @@ struct vbe_mode
 #define NULL         ((void *) 0)
 
 /* Error codes (descriptions are in common.c) */
-typedef enum
-{
-  ERR_NONE = 0,
-  ERR_BAD_FILENAME,
-  ERR_BAD_FILETYPE,
-  ERR_BAD_GZIP_DATA,
-  ERR_BAD_GZIP_HEADER,
-  ERR_BAD_PART_TABLE,
-  ERR_BAD_VERSION,
-  ERR_BELOW_1MB,
-  ERR_BOOT_COMMAND,
-  ERR_BOOT_FAILURE,
-  ERR_BOOT_FEATURES,
-  ERR_DEV_FORMAT,
-  ERR_DEV_VALUES,
-  ERR_EXEC_FORMAT,
-  ERR_FILELENGTH,
-  ERR_FILE_NOT_FOUND,
-  ERR_FSYS_CORRUPT,
-  ERR_FSYS_MOUNT,
-  ERR_GEOM,
-  ERR_NEED_LX_KERNEL,
-  ERR_NEED_MB_KERNEL,
-  ERR_NO_DISK,
-  ERR_NO_PART,
-  ERR_NUMBER_PARSING,
-  ERR_OUTSIDE_PART,
-  ERR_READ,
-  ERR_SYMLINK_LOOP,
-  ERR_UNRECOGNIZED,
-  ERR_WONT_FIT,
-  ERR_WRITE,
-  ERR_BAD_ARGUMENT,
-  ERR_UNALIGNED,
-  ERR_PRIVILEGED,
-  ERR_DEV_NEED_INIT,
-  ERR_NO_DISK_SPACE,
-  ERR_NUMBER_OVERFLOW,
+typedef enum {
+    ERR_NONE = 0,
+    ERR_BAD_FILENAME,
+    ERR_BAD_FILETYPE,
+    ERR_BAD_GZIP_DATA,
+    ERR_BAD_GZIP_HEADER,
+    ERR_BAD_PART_TABLE,
+    ERR_BAD_VERSION,
+    ERR_BELOW_1MB,
+    ERR_BOOT_COMMAND,
+    ERR_BOOT_FAILURE,
+    ERR_BOOT_FEATURES,
+    ERR_DEV_FORMAT,
+    ERR_DEV_VALUES,
+    ERR_EXEC_FORMAT,
+    ERR_FILELENGTH,
+    ERR_FILE_NOT_FOUND,
+    ERR_FSYS_CORRUPT,
+    ERR_FSYS_MOUNT,
+    ERR_GEOM,
+    ERR_NEED_LX_KERNEL,
+    ERR_NEED_MB_KERNEL,
+    ERR_NO_DISK,
+    ERR_NO_PART,
+    ERR_NUMBER_PARSING,
+    ERR_OUTSIDE_PART,
+    ERR_READ,
+    ERR_SYMLINK_LOOP,
+    ERR_UNRECOGNIZED,
+    ERR_WONT_FIT,
+    ERR_WRITE,
+    ERR_BAD_ARGUMENT,
+    ERR_UNALIGNED,
+    ERR_PRIVILEGED,
+    ERR_DEV_NEED_INIT,
+    ERR_NO_DISK_SPACE,
+    ERR_NUMBER_OVERFLOW,
 
-  MAX_ERR_NUM
+    MAX_ERR_NUM
 } grub_error_t;
 
 extern unsigned long install_partition;
@@ -592,11 +587,10 @@ extern int default_entry;
 extern int current_entryno;
 
 /* The constants for password types.  */
-typedef enum
-{
-  PASSWORD_PLAIN,
-  PASSWORD_MD5,
-  PASSWORD_UNSUPPORTED
+typedef enum {
+    PASSWORD_PLAIN,
+    PASSWORD_MD5,
+    PASSWORD_UNSUPPORTED
 }
 password_t;
 
@@ -633,18 +627,17 @@ extern int fsys_type;
 /* The information for a disk geometry. The CHS information is only for
    DOS/Partition table compatibility, and the real number of sectors is
    stored in TOTAL_SECTORS.  */
-struct geometry
-{
-  /* The number of cylinders */
-  unsigned long cylinders;
-  /* The number of heads */
-  unsigned long heads;
-  /* The number of sectors */
-  unsigned long sectors;
-  /* The total number of sectors */
-  unsigned long total_sectors;
-  /* Flags */
-  unsigned long flags;
+struct geometry {
+    /* The number of cylinders */
+    unsigned long cylinders;
+    /* The number of heads */
+    unsigned long heads;
+    /* The number of sectors */
+    unsigned long sectors;
+    /* The total number of sectors */
+    unsigned long total_sectors;
+    /* Flags */
+    unsigned long flags;
 };
 
 extern unsigned long part_start;
@@ -681,7 +674,7 @@ extern char *err_list[];
 
 /* Simplify declaration of entry_addr. */
 typedef void (*entry_func) (int, int, int, int, int, int)
-     __attribute__ ((noreturn));
+__attribute__ ((noreturn));
 
 extern entry_func entry_addr;
 
@@ -717,11 +710,11 @@ extern unsigned short io_map[];
 
 /* calls for direct boot-loader chaining */
 void chain_stage1 (unsigned long segment, unsigned long offset,
-		   unsigned long part_table_addr)
-     __attribute__ ((noreturn));
+                   unsigned long part_table_addr)
+__attribute__ ((noreturn));
 void chain_stage2 (unsigned long segment, unsigned long offset,
-		   int second_sector)
-     __attribute__ ((noreturn));
+                   int second_sector)
+__attribute__ ((noreturn));
 
 /* do some funky stuff, then boot linux */
 void linux_boot (void) __attribute__ ((noreturn));
@@ -800,7 +793,7 @@ int checkkey (void);
 /* Low-level disk I/O */
 int get_diskinfo (int drive, struct geometry *geometry);
 int biosdisk (int subfunc, int drive, struct geometry *geometry,
-	      int sector, int nsec, int segment);
+              int sector, int nsec, int segment);
 void stop_floppy (void);
 
 /* Command-line interface functions. */
@@ -815,33 +808,31 @@ void stop_floppy (void);
 #define BUILTIN_HELP_LIST	0x20	/* Show help in listing.  */
 
 /* The table for a builtin.  */
-struct builtin
-{
-  /* The command name.  */
-  char *name;
-  /* The callback function.  */
-  int (*func) (char *, int);
-  /* The combination of the flags defined above.  */
-  int flags;
-  /* The short version of the documentation.  */
-  char *short_doc;
-  /* The long version of the documentation.  */
-  char *long_doc;
+struct builtin {
+    /* The command name.  */
+    char *name;
+    /* The callback function.  */
+    int (*func) (char *, int);
+    /* The combination of the flags defined above.  */
+    int flags;
+    /* The short version of the documentation.  */
+    char *short_doc;
+    /* The long version of the documentation.  */
+    char *long_doc;
 };
 
 /* All the builtins are registered in this.  */
 extern struct builtin *builtin_table[];
 
 /* The constants for kernel types.  */
-typedef enum
-{
-  KERNEL_TYPE_NONE,		/* None is loaded.  */
-  KERNEL_TYPE_MULTIBOOT,	/* Multiboot.  */
-  KERNEL_TYPE_LINUX,		/* Linux.  */
-  KERNEL_TYPE_BIG_LINUX,	/* Big Linux.  */
-  KERNEL_TYPE_FREEBSD,		/* FreeBSD.  */
-  KERNEL_TYPE_NETBSD,		/* NetBSD.  */
-  KERNEL_TYPE_CHAINLOADER	/* Chainloader.  */
+typedef enum {
+    KERNEL_TYPE_NONE,		/* None is loaded.  */
+    KERNEL_TYPE_MULTIBOOT,	/* Multiboot.  */
+    KERNEL_TYPE_LINUX,		/* Linux.  */
+    KERNEL_TYPE_BIG_LINUX,	/* Big Linux.  */
+    KERNEL_TYPE_FREEBSD,		/* FreeBSD.  */
+    KERNEL_TYPE_NETBSD,		/* NetBSD.  */
+    KERNEL_TYPE_CHAINLOADER	/* Chainloader.  */
 }
 kernel_t;
 
@@ -899,7 +890,7 @@ void init_page (void);
 void print_error (void);
 char *convert_to_ascii (char *buf, int c, ...);
 int get_cmdline (char *prompt, char *cmdline, int maxlen,
-		 int echo_char, int history);
+                 int echo_char, int history);
 int substring (const char *s1, const char *s2);
 int nul_terminate (char *str);
 int get_based_digit (int c, int base);
@@ -924,10 +915,10 @@ int open_device (void);
 int real_open_partition (int flags);
 int open_partition (void);
 int next_partition (unsigned long drive, unsigned long dest,
-		    unsigned long *partition, int *type,
-		    unsigned long *start, unsigned long *len,
-		    unsigned long *offset, int *entry,
-		    unsigned long *ext_offset, char *buf);
+                    unsigned long *partition, int *type,
+                    unsigned long *start, unsigned long *len,
+                    unsigned long *offset, int *entry,
+                    unsigned long *ext_offset, char *buf);
 
 /* Sets device to the one represented by the SAVED_* parameters. */
 int make_saved_active (void);
@@ -967,14 +958,14 @@ void copy_current_part_entry (char *buf);
 
 #ifndef STAGE1_5
 void bsd_boot (kernel_t type, int bootdev, char *arg)
-     __attribute__ ((noreturn));
+__attribute__ ((noreturn));
 
 /* Define flags for load_image here.  */
 /* Don't pass a Linux's mem option automatically.  */
 #define KERNEL_LOAD_NO_MEM_OPTION	(1 << 0)
 
 kernel_t load_image (char *kernel, char *arg, kernel_t suggested_type,
-		     unsigned long load_flags);
+                     unsigned long load_flags);
 
 int load_module (char *module, char *arg);
 int load_initrd (char *initrd);

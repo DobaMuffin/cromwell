@@ -11,7 +11,7 @@
 #include <linux/list.h>
 #include <linux/workqueue.h>
 #include <linux/compiler.h>	/* likely()/unlikely() */
-#endif 
+#endif
 /*
  * Hub request types
  */
@@ -55,16 +55,16 @@
 #define USB_PORT_FEAT_TEST              21
 #define USB_PORT_FEAT_INDICATOR         22
 
-/* 
+/*
  * Hub Status and Hub Change results
  * See USB 2.0 spec Table 11-19 and Table 11-20
  */
 struct usb_port_status {
-	__u16 wPortStatus;
-	__u16 wPortChange;	
+    __u16 wPortStatus;
+    __u16 wPortChange;
 } __attribute__ ((packed));
 
-/* 
+/*
  * wPortStatus bit field
  * See USB 2.0 spec Table 11-21
  */
@@ -81,7 +81,7 @@ struct usb_port_status {
 #define USB_PORT_STAT_INDICATOR         0x1000
 /* bits 13 to 15 are reserved */
 
-/* 
+/*
  * wPortChange bit field
  * See USB 2.0 spec Table 11-22
  * Bits 0 to 4 shown, bits 5 to 15 are reserved
@@ -93,7 +93,7 @@ struct usb_port_status {
 #define USB_PORT_STAT_C_RESET		0x0010
 
 /*
- * wHubCharacteristics (masks) 
+ * wHubCharacteristics (masks)
  * See USB 2.0 spec Table 11-13, offset 3
  */
 #define HUB_CHAR_LPSM		0x0003 /* D1 .. D0 */
@@ -103,8 +103,8 @@ struct usb_port_status {
 #define HUB_CHAR_PORTIND        0x0080 /* D7       */
 
 struct usb_hub_status {
-	__u16 wHubStatus;
-	__u16 wHubChange;
+    __u16 wHubStatus;
+    __u16 wHubChange;
 } __attribute__ ((packed));
 
 /*
@@ -119,8 +119,8 @@ struct usb_hub_status {
 #define HUB_CHANGE_OVERCURRENT	0x0002
 
 
-/* 
- * Hub descriptor 
+/*
+ * Hub descriptor
  * See USB 2.0 spec Table 11-13
  */
 
@@ -128,15 +128,15 @@ struct usb_hub_status {
 #define USB_DT_HUB_NONVAR_SIZE		7
 
 struct usb_hub_descriptor {
-	__u8  bDescLength;
-	__u8  bDescriptorType;
-	__u8  bNbrPorts;
-	__u16 wHubCharacteristics;
-	__u8  bPwrOn2PwrGood;
-	__u8  bHubContrCurrent;
-	    	/* add 1 bit for hub status change; round to bytes */
-	__u8  DeviceRemovable[(USB_MAXCHILDREN + 1 + 7) / 8];
-	__u8  PortPwrCtrlMask[(USB_MAXCHILDREN + 1 + 7) / 8];
+    __u8  bDescLength;
+    __u8  bDescriptorType;
+    __u8  bNbrPorts;
+    __u16 wHubCharacteristics;
+    __u8  bPwrOn2PwrGood;
+    __u8  bHubContrCurrent;
+    /* add 1 bit for hub status change; round to bytes */
+    __u8  DeviceRemovable[(USB_MAXCHILDREN + 1 + 7) / 8];
+    __u8  PortPwrCtrlMask[(USB_MAXCHILDREN + 1 + 7) / 8];
 } __attribute__ ((packed));
 
 struct usb_device;
@@ -152,44 +152,44 @@ struct usb_device;
  * sometimes control/bulk error recovery.
  */
 struct usb_tt {
-	struct usb_device	*hub;	/* upstream highspeed hub */
-	int			multi;	/* true means one TT per port */
+    struct usb_device	*hub;	/* upstream highspeed hub */
+    int			multi;	/* true means one TT per port */
 
-	/* for control/bulk error recovery (CLEAR_TT_BUFFER) */
-	spinlock_t		lock;
-	struct list_head	clear_list;	/* of usb_tt_clear */
-	struct work_struct			kevent;
+    /* for control/bulk error recovery (CLEAR_TT_BUFFER) */
+    spinlock_t		lock;
+    struct list_head	clear_list;	/* of usb_tt_clear */
+    struct work_struct			kevent;
 };
 
 struct usb_tt_clear {
-	struct list_head	clear_list;
-	unsigned		tt;
-	u16			devinfo;
+    struct list_head	clear_list;
+    unsigned		tt;
+    u16			devinfo;
 };
 
 extern void usb_hub_tt_clear_buffer (struct usb_device *dev, int pipe);
 
 struct usb_hub {
-	struct usb_interface	*intf;		/* the "real" device */
-	struct urb		*urb;		/* for interrupt polling pipe */
+    struct usb_interface	*intf;		/* the "real" device */
+    struct urb		*urb;		/* for interrupt polling pipe */
 
-	/* buffer for urb ... 1 bit each for hub and children, rounded up */
-	char			(*buffer)[(USB_MAXCHILDREN + 1 + 7) / 8];
-	dma_addr_t		buffer_dma;	/* DMA address for buffer */
-	union {
-		struct usb_hub_status	hub;
-		struct usb_port_status	port;
-	}			*status;	/* buffer for status reports */
+    /* buffer for urb ... 1 bit each for hub and children, rounded up */
+    char			(*buffer)[(USB_MAXCHILDREN + 1 + 7) / 8];
+    dma_addr_t		buffer_dma;	/* DMA address for buffer */
+    union {
+        struct usb_hub_status	hub;
+        struct usb_port_status	port;
+    }			*status;	/* buffer for status reports */
 
-	int			error;		/* last reported error */
-	int			nerrors;	/* track consecutive errors */
+    int			error;		/* last reported error */
+    int			nerrors;	/* track consecutive errors */
 
-	struct list_head	hub_list;	/* all hubs */
-	struct list_head	event_list;	/* hubs w/data or errs ready */
+    struct list_head	hub_list;	/* all hubs */
+    struct list_head	event_list;	/* hubs w/data or errs ready */
 
-	struct usb_hub_descriptor *descriptor;	/* class descriptor */
-	struct semaphore	khubd_sem;
-	struct usb_tt		tt;		/* Transaction Translator */
+    struct usb_hub_descriptor *descriptor;	/* class descriptor */
+    struct semaphore	khubd_sem;
+    struct usb_tt		tt;		/* Transaction Translator */
 };
 
 #endif /* __LINUX_HUB_H */

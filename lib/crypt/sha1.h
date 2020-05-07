@@ -15,7 +15,7 @@
  */
 
 #ifndef _SHA1_H_
-#define _SHA1_H_  
+#define _SHA1_H_
 
 #include <stdint.h>
 /*
@@ -30,8 +30,7 @@
 
 #ifndef _SHA_enum_
 #define _SHA_enum_
-enum
-{
+enum {
     shaSuccess = 0,
     shaNull,            /* Null pointer parameter */
     shaInputTooLong,    /* input data too long */
@@ -44,14 +43,13 @@ enum
  *  This structure will hold context information for the SHA-1
  *  hashing operation
  */
-typedef struct SHA1Context
-{
+typedef struct SHA1Context {
     uint32_t Intermediate_Hash[SHA1HashSize/4]; /* Message Digest  */
 
     uint32_t Length_Low;            /* Message length in bits      */
     uint32_t Length_High;           /* Message length in bits      */
 
-                               /* Index into message block array   */
+    /* Index into message block array   */
     int_least16_t Message_Block_Index;
     uint8_t Message_Block[64];      /* 512-bit message blocks      */
 

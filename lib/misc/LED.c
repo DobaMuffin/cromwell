@@ -25,28 +25,28 @@
 // g = Green
 // o = Orange
 // x = Off
-// 
+//
 // E.g. rgog will cycle through red, green, orange, green and then loop.
 
 void setLED(char *pattern) {
-	int i, r, g;
-	r = g = 0;
-	
-	for (i=0; i<4; ++i) {
-		switch (pattern[i]) {
-			case 'r':
-				r++; 
-				break;
-			case 'g':
-				g++;
-				break;
-			case 'o':
-				r++;
-				g++;
-				break;
-		}
-		r *= 2;
-		g *= 2;
-	}
-	I2cSetFrontpanelLed(((r<<4) & 0xF0) + (g & 0xF));
+    int i, r, g;
+    r = g = 0;
+
+    for (i=0; i<4; ++i) {
+        switch (pattern[i]) {
+        case 'r':
+            r++;
+            break;
+        case 'g':
+            g++;
+            break;
+        case 'o':
+            r++;
+            g++;
+            break;
+        }
+        r *= 2;
+        g *= 2;
+    }
+    I2cSetFrontpanelLed(((r<<4) & 0xF0) + (g & 0xF));
 }

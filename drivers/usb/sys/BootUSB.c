@@ -4,7 +4,7 @@
  * 2003-06-21 Georg Acher (georg@acher.org)
  *
 */
-          
+
 #include "../usb_wrapper.h"
 
 void subsys_usb_init(void);
@@ -27,64 +27,60 @@ int (*hub_thread_handler)(void*);
 extern int nousb;
 extern int xpad_num;
 
-struct pci_dev xx_ohci_dev={
-        .vendor = 0,
-        .device = 0,
-        .bus = NULL,
-        .irq = 1, // currently not used...
-        .slot_name = "OHCI",
-        .dev = {.name = "PCI",.dma_mask=1},
-        .base = {0xfed00000}, 
-        .flags = {}
+struct pci_dev xx_ohci_dev= {
+    .vendor = 0,
+    .device = 0,
+    .bus = NULL,
+    .irq = 1, // currently not used...
+    .slot_name = "OHCI",
+    .dev = {.name = "PCI",.dma_mask=1},
+    .base = {0xfed00000},
+    .flags = {}
 };
 
-/*------------------------------------------------------------------------*/ 
-void BootStartUSB(void)
-{
-	int n;
+/*------------------------------------------------------------------------*/
+void BootStartUSB(void) {
+    int n;
 
-	nousb=0;
+    nousb=0;
 
-        init_wrapper();
-        subsys_usb_init();
-        hub_thread_handler=thread_handler;
-	usb_hcd_pci_probe(&xx_ohci_dev, module_table_pci_ids);	
-	XPADInit();
-	
-	XRemoteInit();
-	
-	UsbKeyBoardInit();
+    init_wrapper();
+    subsys_usb_init();
+    hub_thread_handler=thread_handler;
+    usb_hcd_pci_probe(&xx_ohci_dev, module_table_pci_ids);
+    XPADInit();
 
-	for(n=0;n<30;n++) {
-		USBGetEvents();
-		wait_ms(1);
-	}
+    XRemoteInit();
+
+    UsbKeyBoardInit();
+
+    for(n=0; n<30; n++) {
+        USBGetEvents();
+        wait_ms(1);
+    }
 }
-/*------------------------------------------------------------------------*/ 
-void USBGetEvents(void)
-{	
-	inc_jiffies(1);
-        do_all_timers();
-        hub_thread_handler(NULL);
-        handle_irqs(-1);       
+/*------------------------------------------------------------------------*/
+void USBGetEvents(void) {
+    inc_jiffies(1);
+    do_all_timers();
+    hub_thread_handler(NULL);
+    handle_irqs(-1);
 }
-/*------------------------------------------------------------------------*/ 
-void BootStopUSB(void)
-{
-	int n;
-        
-        XPADRemove();
-	XRemoteRemove();
-	UsbKeyBoardRemove();
-	
-	for(n=0;n<100;n++)
-	{
-		USBGetEvents();
-		wait_ms(1);
-	}	
+/*------------------------------------------------------------------------*/
+void BootStopUSB(void) {
+    int n;
 
-	module_exit_usb_exit();
-	usb_hcd_pci_remove(&xx_ohci_dev);
-	
-}	
-/*------------------------------------------------------------------------*/ 	
+    XPADRemove();
+    XRemoteRemove();
+    UsbKeyBoardRemove();
+
+    for(n=0; n<100; n++) {
+        USBGetEvents();
+        wait_ms(1);
+    }
+
+    module_exit_usb_exit();
+    usb_hcd_pci_remove(&xx_ohci_dev);
+
+}
+/*------------------------------------------------------------------------*/

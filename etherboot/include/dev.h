@@ -5,11 +5,10 @@
 #include "pci.h"
 
 /* Need to check the packing of this struct if Etherboot is ported */
-struct dev_id
-{
-	unsigned short	vendor_id;
-	unsigned short	device_id;
-	unsigned char	bus_type;
+struct dev_id {
+    unsigned short	vendor_id;
+    unsigned short	device_id;
+    unsigned char	bus_type;
 #define	PCI_BUS_TYPE	1
 #define	ISA_BUS_TYPE	2
 };
@@ -18,45 +17,41 @@ struct dev_id
 #define	DEV_ID_SIZE	8
 
 
-struct pci_probe_state 
-{
+struct pci_probe_state {
 #ifdef CONFIG_PCI
-	struct pci_device dev;
-	int advance;
+    struct pci_device dev;
+    int advance;
 #else
-	int dummy;
+    int dummy;
 #endif
 };
-struct isa_probe_state
-{
+struct isa_probe_state {
 #ifdef CONFIG_ISA
-	const struct isa_driver *driver;
-	int advance;
+    const struct isa_driver *driver;
+    int advance;
 #else
-	int dummy;
+    int dummy;
 #endif
 };
 
-union probe_state
-{
-	struct pci_probe_state pci;
-	struct isa_probe_state isa;
+union probe_state {
+    struct pci_probe_state pci;
+    struct isa_probe_state isa;
 };
 
-struct dev
-{
-	void		(*disable)P((struct dev *));
-	struct dev_id	devid;	/* device ID string (sent to DHCP server) */
-	int		index;  /* Index of next device on this controller to probe */
-	int		type;		/* Type of device I am probing for */
-	int		how_probe;	/* First, next or awake */
-	int 		to_probe;	/* Flavor of device I am probing */
-	int		failsafe;	/* Failsafe probe requested */
-	int		type_index;	/* Index of this device (within type) */
+struct dev {
+    void		(*disable)P((struct dev *));
+    struct dev_id	devid;	/* device ID string (sent to DHCP server) */
+    int		index;  /* Index of next device on this controller to probe */
+    int		type;		/* Type of device I am probing for */
+    int		how_probe;	/* First, next or awake */
+    int 		to_probe;	/* Flavor of device I am probing */
+    int		failsafe;	/* Failsafe probe requested */
+    int		type_index;	/* Index of this device (within type) */
 #define	PROBE_NONE 0
 #define PROBE_PCI  1
 #define PROBE_ISA  2
-	union probe_state state;
+    union probe_state state;
 };
 
 
