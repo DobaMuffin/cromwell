@@ -33,6 +33,7 @@ void xenium_set_led(u8 led);
 u8 xenium_get_bank(void);
 u8 xenium_is_detected();
 void xenium_erase_bank(u8 bank);
+void xenium_write_bank(u8 bank, u8* data);
 
 
 #endif
