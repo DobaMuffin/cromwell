@@ -24,7 +24,7 @@ INCLUDE = -I$(TOPDIR)/grub -I$(TOPDIR)/include -I$(TOPDIR)/ -I./ -I$(TOPDIR)/fs/
 	-I$(TOPDIR)/drivers/video -I$(TOPDIR)/drivers/ide -I$(TOPDIR)/drivers/flash -I$(TOPDIR)/lib/misc \
 	-I$(TOPDIR)/boot_xbe/ -I$(TOPDIR)/fs/grub -I$(TOPDIR)/lib/font \
 	-I$(TOPDIR)/startuploader -I$(TOPDIR)/drivers/cpu \
-	-I$(TOPDIR)/lib/jpeg/ -I$(TOPDIR)/menu/actions -I$(TOPDIR)/menu/textmenu -I$(TOPDIR)/menu/iconmenu
+	-I$(TOPDIR)/lib/jpeg/ -I$(TOPDIR)/menu/actions -I$(TOPDIR)/menu/textmenu
 
 #These are intended to be non-overridable.
 CROM_CFLAGS=$(INCLUDE) -m32 -fno-builtin -fno-stack-protector -no-pie -DGITREV=\\\"$(GITREV)\\\"
@@ -97,8 +97,6 @@ OBJECTS-CROM += $(TOPDIR)/obj/sha1.o
 OBJECTS-CROM += $(TOPDIR)/obj/BootVideoHelpers.o
 OBJECTS-CROM += $(TOPDIR)/obj/vsprintf.o
 OBJECTS-CROM += $(TOPDIR)/obj/LED.o
-OBJECTS-CROM += $(TOPDIR)/obj/IconMenu.o
-OBJECTS-CROM += $(TOPDIR)/obj/IconMenuInit.o
 OBJECTS-CROM += $(TOPDIR)/obj/TextMenu.o
 OBJECTS-CROM += $(TOPDIR)/obj/TextMenuInit.o
 OBJECTS-CROM += $(TOPDIR)/obj/VideoMenuInit.o

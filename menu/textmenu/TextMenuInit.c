@@ -19,10 +19,54 @@ TEXTMENU *TextMenuInit(void) {
 
     //Create the root menu - MANDATORY
     menuPtr = malloc(sizeof(TEXTMENU));
-    strcpy(menuPtr->szCaption, "Main Menu");
+    strcpy(menuPtr->szCaption, "");
     menuPtr->firstMenuItem=NULL;
 
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Launch Menu");
+    itemPtr->functionPtr=DrawChildTextMenu;
+    itemPtr->functionDataPtr = (void *)PhyMenuInit();
+    TextMenuAddItem(menuPtr, itemPtr);
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Disk Tools");
+    itemPtr->functionPtr=DrawChildTextMenu;
+    itemPtr->functionDataPtr = (void *)PhyMenuInit();
+    TextMenuAddItem(menuPtr, itemPtr);
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "EEprom Tools");
+    itemPtr->functionPtr=DrawChildTextMenu;
+    itemPtr->functionDataPtr = (void *)PhyMenuInit();
+    TextMenuAddItem(menuPtr, itemPtr);
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Settings");
+    itemPtr->functionPtr=DrawChildTextMenu;
+    itemPtr->functionDataPtr = (void *)PhyMenuInit();
+    TextMenuAddItem(menuPtr, itemPtr);
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Reboot");
+    itemPtr->functionPtr=DrawChildTextMenu;
+    itemPtr->functionDataPtr = (void *)ResetMenuInit();
+    TextMenuAddItem(menuPtr, itemPtr);
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Power Off");
+    itemPtr->functionPtr=DrawChildTextMenu;
+    itemPtr->functionDataPtr = (void *)ResetMenuInit();
+    TextMenuAddItem(menuPtr, itemPtr);
+
     //PERIPHERALS MENU
+    /*
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
     strcpy(itemPtr->szCaption, "Peripherals");
@@ -46,7 +90,7 @@ TEXTMENU *TextMenuInit(void) {
     itemPtr->functionDataPtr = (void *)HddMenuInit();
     TextMenuAddItem(menuPtr, itemPtr);
 
-#ifdef FLASH
+    #ifdef FLASH
     //FLASH MENU
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
@@ -54,13 +98,14 @@ TEXTMENU *TextMenuInit(void) {
     itemPtr->functionPtr=DrawChildTextMenu;
     itemPtr->functionDataPtr = (void *)FlashMenuInit();
     TextMenuAddItem(menuPtr, itemPtr);
-#endif
+    #endif
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
     strcpy(itemPtr->szCaption, "Reset Menu");
     itemPtr->functionPtr=DrawChildTextMenu;
     itemPtr->functionDataPtr = (void *)ResetMenuInit();
     TextMenuAddItem(menuPtr, itemPtr);
+    */
 
     return menuPtr;
 }

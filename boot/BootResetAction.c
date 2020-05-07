@@ -22,6 +22,8 @@
 #include "video.h"
 #include "memory_layout.h"
 
+#define SILENT_MODE
+
 JPEG jpegBackdrop;
 
 int nTempCursorMbrX, nTempCursorMbrY;
@@ -112,6 +114,7 @@ extern void BootResetAction ( void ) {
 
     VIDEO_CURSOR_POSY=vmode.ymargin;
     VIDEO_CURSOR_POSX=(vmode.xmargin/*+64*/)*4;
+
 #ifndef SILENT_MODE
     if (cromwell_config==XROMWELL) 	printk("\2Xromwell " VERSION "\2\n" );
     if (cromwell_config==CROMWELL)	printk("\2Cromwell BIOS " VERSION "\2\n" );
@@ -190,7 +193,7 @@ extern void BootResetAction ( void ) {
     printk("Initializing IDE Controller\n");
 #endif
     BootIdeWaitNotBusy(0x1f0);
-    wait_ms(200);
+    //wait_ms(200);
 #ifndef SILENT_MODE
     printk("Ready\n");
 #endif
@@ -212,8 +215,13 @@ extern void BootResetAction ( void ) {
     setLED("gggg");
 
 //	printk("i2C=%d SMC=%d, IDE=%d, tick=%d una=%d unb=%d\n", nCountI2cinterrupts, nCountInterruptsSmc, nCountInterruptsIde, BIOS_TICK_COUNT, nCountUnusedInterrupts, nCountUnusedInterruptsPic2);
-    IconMenuInit();
-    IconMenu();
+    //IconMenuInit();
+    //IconMenu();
+
+
+
     //Should never come back here.
-    while(1);
+    while(1) {
+        TextMenu(TextMenuInit(),NULL);
+    }
 }

@@ -35,16 +35,16 @@ void TextMenuDraw(TEXTMENU* menu, TEXTMENUITEM *firstVisibleMenuItem, TEXTMENUIT
     TEXTMENUITEM *item=NULL;
     int menucount;
 
-    VIDEO_CURSOR_POSX=75;
-    VIDEO_CURSOR_POSY=125;
+    VIDEO_CURSOR_POSX=120;
+    VIDEO_CURSOR_POSY=100;
 
     //Draw the menu title.
     VIDEO_ATTR=0xff00ff;
     printk("\2          %s\n",menu->szCaption);
-    VIDEO_CURSOR_POSY+=30;
+    VIDEO_CURSOR_POSY+=50;
 
     //Draw the menu items
-    VIDEO_CURSOR_POSX=150;
+    VIDEO_CURSOR_POSX=120;
 
     //If we were moving up, the
 
@@ -58,7 +58,9 @@ void TextMenuDraw(TEXTMENU* menu, TEXTMENUITEM *firstVisibleMenuItem, TEXTMENUIT
         if (item == selectedItem) VIDEO_ATTR=0xffef37;
         else VIDEO_ATTR=0xffffff;
         //Font size 2=big.
-        printk("\n\2               %s\n",item->szCaption);
+        printk("\n\2      %s\n",item->szCaption);
+        printk("\n");
+        printk("\n");
         item=item->nextMenuItem;
     }
     VIDEO_ATTR=0xffffff;
@@ -77,7 +79,7 @@ void TextMenu(TEXTMENU *menu, TEXTMENUITEM *selectedItem) {
     //Main menu event loop.
     while(1) {
         int changed=0;
-        wait_ms(75);
+        wait_ms(25);
 
         if (risefall_xpad_BUTTON(TRIGGER_XPAD_PAD_UP) == 1) {
             if (selectedMenuItem->previousMenuItem!=NULL) {
@@ -108,6 +110,7 @@ void TextMenu(TEXTMENU *menu, TEXTMENUITEM *selectedItem) {
             BootVideoClearScreen(&jpegBackdrop, 0, 0xffff);
             VIDEO_ATTR=0xffffff;
             //Menu item selected - invoke function pointer.
+            selectedMenuItem->functionDataPtr;
             if (selectedMenuItem->functionPtr!=NULL) selectedMenuItem->functionPtr(selectedMenuItem->functionDataPtr);
             //Clear the screen again
             BootVideoClearScreen(&jpegBackdrop, 0, 0xffff);

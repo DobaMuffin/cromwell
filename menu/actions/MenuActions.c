@@ -44,28 +44,12 @@ void DrawBootMenu(void *rootEntry) {
     TEXTMENU *menu;
     TEXTMENUITEM *menuPtr, *defaultMenuItem;
     CONFIGENTRY *configEntry, *currentConfigEntry;
-    extern int timedOut;
 
     defaultMenuItem=NULL;
     configEntry = rootEntry;
 
     if (configEntry->nextConfigEntry==NULL) {
         //If there is only one option, just boot it.
-        BootMenuEntry(configEntry);
-        return;
-    }
-
-    if (timedOut) {
-        //We should be non-interactive, then.
-        //If there is a default entry, boot that.
-        for (currentConfigEntry = configEntry; currentConfigEntry != NULL;
-                currentConfigEntry = currentConfigEntry->nextConfigEntry) {
-            if (currentConfigEntry->isDefault) {
-                BootMenuEntry(currentConfigEntry);
-                return;
-            }
-        }
-        //There wasn't a default entry, so just boot the first in the list
         BootMenuEntry(configEntry);
         return;
     }
