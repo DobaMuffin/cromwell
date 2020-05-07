@@ -94,9 +94,6 @@ static void xenium_flash_program_byte(u32 address, u8 data){
 }
 
 u8 xenium_is_detected(){
-    //Genuine xenium needs a read a 0x74 to get it going
-    xenium_flash_read_byte(0x74);
-
     xenium_flash_reset();
     lpc_send_byte(0xAAAA,0xAA);
     lpc_send_byte(0x5555,0x55);
@@ -120,31 +117,27 @@ u8 xenium_is_detected(){
 }
 
 void xenium_erase_bank(u8 bank){
-    u32 bank_size;
-    u32 address_start; 
-
-    xenium_set_bank(bank);
-    bank_size = xenium_get_bank_size(bank);
+    u32 bank_size = xenium_get_bank_size(bank);
     if (bank_size == 0)
         return;
 
     printk("Erasing Bank %u ", bank);
+	xenium_set_bank(bank);
     xenium_flash_reset();
     for(u32 i = 0; i <= bank_size; i += XENIUM_FLASH_SECTOR_SIZE){
-        printk(" . ", bank);
+        printk(" . ");
         xenium_sector_erase(i);
     }
     printk("\n", bank);
 }
 
 void xenium_write_bank(u8 bank, u8* data){
-    u32 bank_size;
-
-    xenium_set_bank(bank);
-    bank_size = xenium_get_bank_size(bank);
+    u32 bank_size = xenium_get_bank_size(bank);
     if (bank_size == 0)
         return;
 
+	printk("Writing Bank %u ", bank);
+	xenium_set_bank(bank);
     xenium_flash_reset();
     xenium_flash_write_stream(0, data, bank_size);  
 }
