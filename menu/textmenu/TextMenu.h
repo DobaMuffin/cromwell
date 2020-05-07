@@ -47,4 +47,11 @@ typedef struct TEXTMENU {
     TEXTMENUITEM* firstMenuItem;
 } TEXTMENU;
 
+void TextMenuAddItem(TEXTMENU *menu, TEXTMENUITEM *newMenuItem);
+void TextMenuDraw(TEXTMENU* menu, TEXTMENUITEM *firstVisibleMenuItem, TEXTMENUITEM *selectedItem);
+void TextMenu(TEXTMENU *menu, TEXTMENUITEM *selectedItem);
+
+TEXTMENU* ResetMenuInit(void);
+TEXTMENU* PhyMenuInit(void);
+
 #endif

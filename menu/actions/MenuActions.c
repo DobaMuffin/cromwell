@@ -84,7 +84,7 @@ void BootMenuEntry(void *entry) {
 }
 
 void DrawChildTextMenu(void *menu) {
-    TextMenu((TEXTMENU*)menu);
+    TextMenu((TEXTMENU*)menu,NULL);
 }
 
 #ifdef ETHERBOOT
