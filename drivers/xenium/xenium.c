@@ -8,6 +8,7 @@
 
 //IO CONTROL INTERFACE
 void xenium_set_bank(u8 bank){
+    printk("Bank set to %u\n", bank);
     if(bank <= 10)
         IoOutputByte(XENIUM_REGISTER_BANKING, bank);
 }
@@ -49,82 +50,39 @@ static u8 xenium_flash_busy(){
     return xenium_flash_read_byte(0) != xenium_flash_read_byte(0);
 }
 
-static void xenium_get_bank_info(u8 bank, u32* bank_size, u32* address_start){
+static u32 xenium_get_bank_size(u8 bank){
+    u32 bank_size;
     switch (bank){
         case XENIUM_BANK_1:
-            *bank_size = 0x40000;
-            *address_start = 0x000000;
-            break;
         case XENIUM_BANK_2:
-            *bank_size = 0x40000;
-            *address_start = 0x040000;
-            break;
         case XENIUM_BANK_3:
-            *bank_size = 0x40000;
-            *address_start = 0x080000;
-            break;
         case XENIUM_BANK_4:
-            *bank_size = 0x40000;
-            *address_start = 0x0C0000;
-            break;
-        case XENIUM_BANK_RECOVERY:
-            *bank_size = 0x40000;
-            *address_start = 0x1C0000;
+            bank_size = 0x40000;
             break;
         case XENIUM_BANK_1_512:
-            *bank_size = 0x80000;
-            *address_start = 0x000000;
-            break;
         case XENIUM_BANK_2_512:
-            *bank_size = 0x80000;
-            *address_start = 0x080000;
+            bank_size = 0x80000;
             break;
         case XENIUM_BANK_1_1024:
-            *bank_size = 0x100000;
-            *address_start = 0x000000;
+            bank_size = 0x100000;
             break;
+        //Let's not erase any other banks!
         default:
-            //Let's not erase the OS banks!
-            *bank_size = 0;
+            bank_size = 0;
             break;
     }
+    return bank_size;
 }
 
-static void xenium_sector_erase(u32 sector){
-    u32 SA;
-    printk("Erasing sector %u...", sector);
-    if(sector<=30){
-        sector=sector<<3;
-        SA=sector<<12;
-    }
-    else if(sector == 31){
-        sector = 0b11111000;
-        SA=sector<<12;
-    }
-    else if (sector == 32){
-        sector = 0b11111100;
-        SA=sector<<12;
-    }
-    else if (sector == 33){
-        sector = 0b11111101;
-        SA=sector<<12;
-    }
-    else if (sector == 34){
-        sector = 0b11111110;
-        SA=sector<<12;
-    }
-    else {
-        return;
-    }
+static void xenium_sector_erase(u32 sector_address){
     xenium_flash_reset();
     lpc_send_byte(0xAAAA, 0xAA);
     lpc_send_byte(0x5555, 0x55);
     lpc_send_byte(0xAAAA, 0x80);
     lpc_send_byte(0xAAAA, 0xAA);
     lpc_send_byte(0x5555, 0x55);
-    lpc_send_byte(SA,    0x30);
+    lpc_send_byte(sector_address, 0x30);
     while(xenium_flash_busy());
-    printk("complete!\n");
 }
 
 static void xenium_flash_program_byte(u32 address, u8 data){
@@ -162,45 +120,31 @@ u8 xenium_is_detected(){
 }
 
 void xenium_erase_bank(u8 bank){
-    const u32 SECTOR_SIZE = 0x10000;
     u32 bank_size;
-    u32 address_start, address_end; 
-    u32 sector_start, sector_end;
+    u32 address_start; 
 
-    xenium_get_bank_info(bank, &bank_size, &address_start);
-    address_end = address_start + bank_size;
+    xenium_set_bank(bank);
+    bank_size = xenium_get_bank_size(bank);
     if (bank_size == 0)
         return;
 
-    //Convert the address to the corresponding sectors
-    sector_start = address_start / SECTOR_SIZE;
-    if (bank == XENIUM_BANK_RECOVERY){
-        //Recovery bank is at the end of the flash chip which has some
-        //different sector sizes, instead of compensating for all that,
-        //I just manually set the last sector for this case.
-        sector_end = 34;
-    } else {
-        sector_end = address_end / SECTOR_SIZE;
-    }
-    printk("Erasing Bank %u (Sector %u to %u)\n", bank,
-                                                 sector_start,
-                                                 sector_end);
-    
+    printk("Erasing Bank %u ", bank);
     xenium_flash_reset();
-    for(u32 i = sector_start; i <= sector_end; i++){
+    for(u32 i = 0; i <= bank_size; i += XENIUM_FLASH_SECTOR_SIZE){
+        printk(" . ", bank);
         xenium_sector_erase(i);
-    }  
+    }
+    printk("\n", bank);
 }
 
 void xenium_write_bank(u8 bank, u8* data){
     u32 bank_size;
-    u32 address_start; 
 
-    xenium_get_bank_info(bank, &bank_size, &address_start);
+    xenium_set_bank(bank);
+    bank_size = xenium_get_bank_size(bank);
     if (bank_size == 0)
         return;
 
     xenium_flash_reset();
-    //We assume the bank is already erased using xenium_erase_bank()
-    xenium_flash_write_stream(address_start, data, bank_size);  
+    xenium_flash_write_stream(0, data, bank_size);  
 }
