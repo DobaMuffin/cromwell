@@ -21,6 +21,7 @@
 #include "config.h"
 #include "video.h"
 #include "memory_layout.h"
+#include "xenium.h"
 
 #define SILENT_MODE
 
@@ -96,6 +97,7 @@ extern void BootResetAction ( void ) {
         );
     }
     // display solid red frontpanel LED while we start up
+    xenium_set_led(XENIUM_LED_RED);
     setLED("rrrr");
     // paint the backdrop
 #ifndef DEBUG_MODE
@@ -147,6 +149,7 @@ extern void BootResetAction ( void ) {
 
     printk("\n");
 #endif
+    xenium_set_led(XENIUM_LED_BLUE);
     setLED("rrrr");
 
     VIDEO_ATTR=0xffffffff;
@@ -160,7 +163,7 @@ extern void BootResetAction ( void ) {
         volatile u8 * pb=(u8 *)0xfef000a8;  // Ethernet MMIO base + MAC register offset (<--thanks to Anders Gustafsson)
         int n;
         for(n=5; n>=0; n--) {
-            *pb++=	eeprom.MACAddress[n];    // send it in backwards, its reversed by the driver
+            *pb++=    eeprom.MACAddress[n];    // send it in backwards, its reversed by the driver
         }
     }
 #ifndef SILENT_MODE
@@ -193,7 +196,7 @@ extern void BootResetAction ( void ) {
     printk("Initializing IDE Controller\n");
 #endif
     BootIdeWaitNotBusy(0x1f0);
-    //wait_ms(200);
+    wait_ms(200);
 #ifndef SILENT_MODE
     printk("Ready\n");
 #endif
@@ -213,14 +216,11 @@ extern void BootResetAction ( void ) {
 
     // if we made it this far, lets have a solid green LED to celebrate
     setLED("gggg");
+    xenium_set_led(XENIUM_LED_OFF);
+    printk("Xenium detected: %u, Currently on bank %u\n",xenium_is_detected(), 
+                                                         xenium_get_bank());
+    wait_ms(2000);
 
-//	printk("i2C=%d SMC=%d, IDE=%d, tick=%d una=%d unb=%d\n", nCountI2cinterrupts, nCountInterruptsSmc, nCountInterruptsIde, BIOS_TICK_COUNT, nCountUnusedInterrupts, nCountUnusedInterruptsPic2);
-    //IconMenuInit();
-    //IconMenu();
-
-
-
-    //Should never come back here.
     while(1) {
         TextMenu(TextMenuInit(),NULL);
     }

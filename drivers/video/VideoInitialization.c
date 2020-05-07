@@ -99,6 +99,8 @@ xbox_av_type DetectAvType(void) {
 void SetGPURegister(const GPU_PARAMETER* gpu, u8 *pbRegs) {
     u8 b;
     u32 m = 0;
+    // NV_PRAMDAC_630
+    *((volatile unsigned int *)&pbRegs[0x680630])=0x00000002;
     // NVHDISPEND
     *((volatile u32 *)&pbRegs[0x680820]) = gpu->crtchdispend - 1;
     // NVHTOTAL
@@ -186,10 +188,10 @@ void SetGPURegister(const GPU_PARAMETER* gpu, u8 *pbRegs) {
     // Overflow bits
     /*
     b = ((hTotal   & 0x040) >> 2)
-    	| ((vDisplay & 0x400) >> 7)
-    	| ((vStart   & 0x400) >> 8)
-    	| ((vDisplay & 0x400) >> 9)
-    	| ((vTotal   & 0x400) >> 10);
+        | ((vDisplay & 0x400) >> 7)
+        | ((vStart   & 0x400) >> 8)
+        | ((vDisplay & 0x400) >> 9)
+        | ((vTotal   & 0x400) >> 10);
     */
     b = (((gpu->nvhtotal / 8 - 5) & 0x040) >> 2)
         | (((gpu->yres - 1) & 0x400) >> 7)

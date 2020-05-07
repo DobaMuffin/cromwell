@@ -71,7 +71,9 @@ void memPlaceKernel(const u8* kernelOrg, u32 kernelSize) {
 
     /* Try to execute a pure ELF binary here, using the etherboot
      * code. This is required for ELF kernels, such as FreeBSD */
+    #ifdef ETHERBOOT
     try_elf_boot((char *)kernelOrg, kernelSize);
+    #endif
 }
 
 

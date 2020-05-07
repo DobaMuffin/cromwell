@@ -24,7 +24,8 @@ INCLUDE = -I$(TOPDIR)/grub -I$(TOPDIR)/include -I$(TOPDIR)/ -I./ -I$(TOPDIR)/fs/
 	-I$(TOPDIR)/drivers/video -I$(TOPDIR)/drivers/ide -I$(TOPDIR)/drivers/flash -I$(TOPDIR)/lib/misc \
 	-I$(TOPDIR)/boot_xbe/ -I$(TOPDIR)/fs/grub -I$(TOPDIR)/lib/font \
 	-I$(TOPDIR)/startuploader -I$(TOPDIR)/drivers/cpu \
-	-I$(TOPDIR)/lib/jpeg/ -I$(TOPDIR)/menu/actions -I$(TOPDIR)/menu/textmenu
+	-I$(TOPDIR)/lib/jpeg/ -I$(TOPDIR)/menu/actions -I$(TOPDIR)/menu/textmenu \
+	-I$(TOPDIR)/drivers/xenium
 
 #These are intended to be non-overridable.
 CROM_CFLAGS=$(INCLUDE) -m32 -fno-builtin -fno-stack-protector -no-pie -DGITREV=\\\"$(GITREV)\\\"
@@ -133,6 +134,7 @@ OBJECTS-CROM += $(TOPDIR)/obj/BootFlashUi.o
 OBJECTS-CROM += $(TOPDIR)/obj/BootEEPROM.o
 OBJECTS-CROM += $(TOPDIR)/obj/BootParser.o
 OBJECTS-CROM += $(TOPDIR)/obj/BootFATX.o
+OBJECTS-CROM += $(TOPDIR)/obj/xenium.o
 #USB
 OBJECTS-CROM += $(TOPDIR)/obj/config.o 
 OBJECTS-CROM += $(TOPDIR)/obj/hcd-pci.o
