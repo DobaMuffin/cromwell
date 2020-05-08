@@ -29,12 +29,41 @@
 #define XENIUM_BANK_1_1024      9
 #define XENIUM_BANK_RECOVERY    10
 
+//OpenXOS uses Sector 33 in the Flash chip for non-voltatile
+//settings and eeprom backup. This sits at absolute address 0x1FA000
+//which is in Bank 10 (0x1C0000). To get the relative address against Bank 10
+//I subtract the difference.
+//A genuine Xenium uses Sector 34 which I wont touch.
+#define XENIUM_SETTINGS_OFFSET (0x1FA000-0x1C0000)
+#define XENIUM_SETTINGS_SECTOR_SIZE 0x2000 //8kbytes
+#define XENIUM_MAX_BIOS_NAME_LENGTH 32
+
+typedef struct flash_bank {
+    u8 bank_used;
+    u8 bios_led_colour;
+    u8 bios_name[XENIUM_MAX_BIOS_NAME_LENGTH];
+	u32 bios_size;
+} flash_bank;
+
+typedef struct xenium_settings {
+    u8 default_bank;
+    u8 instant_boot;
+    u8 quick_boot;
+    flash_bank flash_bank1;
+    flash_bank flash_bank2;
+    flash_bank flash_bank3;
+    flash_bank flash_bank4;
+    u8 eeprom[256];
+	u16 checksum; //checksum of the settings struct  excluding itself
+} xenium_settings;
+
 void xenium_set_bank(u8 bank);
 void xenium_set_led(u8 led);
 u8 xenium_get_bank(void);
 u8 xenium_is_detected();
 void xenium_erase_bank(u8 bank);
 void xenium_write_bank(u8 bank, u8* data);
-
+void xenium_read_settings(xenium_settings* settings);
+void xenium_update_settings(xenium_settings* settings);
 
 #endif

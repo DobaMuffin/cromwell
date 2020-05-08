@@ -141,3 +141,49 @@ void xenium_write_bank(u8 bank, u8* data){
     xenium_flash_reset();
     xenium_flash_write_stream(0, data, bank_size);  
 }
+
+static u8 calc_checksum(u8* data, u32 len){
+	u8 checksum = 0;
+	for (u32 i = 0; i < len; i++){
+		checksum ^= data[i];
+	}
+    return checksum;
+}
+
+void xenium_read_settings(xenium_settings* settings){
+    xenium_set_bank(XENIUM_BANK_RECOVERY);
+    xenium_flash_read_stream(XENIUM_SETTINGS_OFFSET,
+                             settings, sizeof(xenium_settings));
+
+    if (settings->checksum != calc_checksum((u8*)settings,sizeof(xenium_settings)-1)){
+		printk("Settings appear corrupt! reset to default\n");
+        memset(settings,0x00,sizeof(xenium_settings));
+    }
+}
+
+void xenium_update_settings(xenium_settings* new_settings){
+    xenium_settings old_settings;
+    xenium_read_settings(&old_settings);
+
+    u8 checksum = calc_checksum((u8*)new_settings, sizeof(xenium_settings)-1);
+    new_settings->checksum = checksum;
+
+    if (memcmp(&old_settings,new_settings, sizeof(xenium_settings)) == 0){
+        printk("Settings have not changed. Not writing\n");
+        return;
+    }
+
+    xenium_set_bank(XENIUM_BANK_RECOVERY);
+    xenium_sector_erase(XENIUM_SETTINGS_OFFSET);
+    xenium_flash_write_stream(XENIUM_SETTINGS_OFFSET,
+                              new_settings, sizeof(xenium_settings));
+
+    //Verify
+    xenium_settings verify_settings;
+    xenium_read_settings(&verify_settings);
+    if (memcmp(&verify_settings,new_settings, sizeof(xenium_settings)) == 0){
+        printk("Settings written and successfully verified\n");
+    } else {
+        printk("Error writing settings, try again\n");
+    }
+}
