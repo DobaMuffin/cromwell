@@ -13,9 +13,6 @@
 #include "VideoInitialization.h"
 #include "xenium.h"
 
-
-u8 banks[11] = {0,1,2,3,4,5,6,7,8,9,10};
-
 TEXTMENU *LaunchMenuInit(void) {
 
     TEXTMENUITEM *itemPtr;
@@ -30,9 +27,7 @@ TEXTMENU *LaunchMenuInit(void) {
     menuPtr->firstMenuItem=NULL;
     
     for(u32 i = 0; i < XENIUM_MAX_BANKS; i ++){
-		printk("here\n");
         if(settings.flash_bank[i].bank_used != 0){
-			printk("LaunchMenuInit bank %u used\n",i);
             itemPtr = malloc(sizeof(TEXTMENUITEM));
             memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
             strcpy(itemPtr->szCaption, settings.flash_bank[i].bios_name);

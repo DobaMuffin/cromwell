@@ -124,7 +124,7 @@ void xenium_erase_bank(u8 bank){
     u8 old_bank = xenium_get_bank();
     xenium_set_bank(bank);
     xenium_flash_reset();
-    for(u32 i = 0; i <= bank_size; i += XENIUM_FLASH_SECTOR_SIZE){
+    for(u32 i = 0; i < bank_size; i += XENIUM_FLASH_SECTOR_SIZE){
         printk(" . ");
         xenium_sector_erase(i);
     }
