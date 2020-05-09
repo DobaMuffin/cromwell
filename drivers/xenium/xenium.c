@@ -8,7 +8,6 @@
 
 //IO CONTROL INTERFACE
 void xenium_set_bank(u8 bank){
-    printk("Bank set to %u\n", bank);
     if(bank <= 10)
         IoOutputByte(XENIUM_REGISTER_BANKING, bank);
 }
@@ -75,7 +74,6 @@ static u32 xenium_get_bank_size(u8 bank){
 }
 
 static void xenium_sector_erase(u32 sector_address){
-    xenium_flash_reset();
     lpc_send_byte(0xAAAA, 0xAA);
     lpc_send_byte(0x5555, 0x55);
     lpc_send_byte(0xAAAA, 0x80);
@@ -83,6 +81,7 @@ static void xenium_sector_erase(u32 sector_address){
     lpc_send_byte(0x5555, 0x55);
     lpc_send_byte(sector_address, 0x30);
     while(xenium_flash_busy());
+	xenium_flash_reset();
 }
 
 static void xenium_flash_program_byte(u32 address, u8 data){
@@ -122,12 +121,14 @@ void xenium_erase_bank(u8 bank){
         return;
 
     printk("Erasing Bank %u ", bank);
+    u8 old_bank = xenium_get_bank();
     xenium_set_bank(bank);
     xenium_flash_reset();
     for(u32 i = 0; i <= bank_size; i += XENIUM_FLASH_SECTOR_SIZE){
         printk(" . ");
         xenium_sector_erase(i);
     }
+    xenium_set_bank(old_bank);
     printk("\n", bank);
 }
 
@@ -137,9 +138,13 @@ void xenium_write_bank(u8 bank, u8* data){
         return;
 
     printk("Writing Bank %u ", bank);
+    u8 old_bank = xenium_get_bank();
     xenium_set_bank(bank);
     xenium_flash_reset();
-    xenium_flash_write_stream(0, data, bank_size);  
+    for (u32 i = 0; i < bank_size; i++){
+        xenium_flash_program_byte(i, data[i]);
+    }
+    xenium_set_bank(old_bank);
 }
 
 static u8 calc_checksum(u8* data, u32 len){
@@ -151,14 +156,18 @@ static u8 calc_checksum(u8* data, u32 len){
 }
 
 void xenium_read_settings(xenium_settings* settings){
+    u8 old_bank = xenium_get_bank();
     xenium_set_bank(XENIUM_BANK_RECOVERY);
+	xenium_flash_reset();
     xenium_flash_read_stream(XENIUM_SETTINGS_OFFSET,
-                             settings, sizeof(xenium_settings));
+                             (u8*)settings, sizeof(xenium_settings));
 
     if (settings->checksum != calc_checksum((u8*)settings,sizeof(xenium_settings)-1)){
-		printk("Settings appear corrupt! reset to default\n");
+        printk("Settings appear corrupt! reset to default\n");
         memset(settings,0x00,sizeof(xenium_settings));
+		settings->checksum = calc_checksum((u8*)settings,sizeof(xenium_settings)-1);
     }
+    xenium_set_bank(old_bank);
 }
 
 void xenium_update_settings(xenium_settings* new_settings){
@@ -173,11 +182,13 @@ void xenium_update_settings(xenium_settings* new_settings){
         return;
     }
 
+    u8 old_bank = xenium_get_bank();
     xenium_set_bank(XENIUM_BANK_RECOVERY);
     xenium_sector_erase(XENIUM_SETTINGS_OFFSET);
-    xenium_flash_write_stream(XENIUM_SETTINGS_OFFSET,
-                              new_settings, sizeof(xenium_settings));
-
+    
+    for (u32 i = 0; i < sizeof(xenium_settings); i++){
+        xenium_flash_program_byte(i + XENIUM_SETTINGS_OFFSET, ((u8*)(new_settings))[i]);
+    }
     //Verify
     xenium_settings verify_settings;
     xenium_read_settings(&verify_settings);
@@ -186,4 +197,5 @@ void xenium_update_settings(xenium_settings* new_settings){
     } else {
         printk("Error writing settings, try again\n");
     }
+    xenium_set_bank(old_bank);
 }

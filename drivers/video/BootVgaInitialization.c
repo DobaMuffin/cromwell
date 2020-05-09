@@ -191,7 +191,7 @@ void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pvmode) {
         // Settings for 720x480@60Hz (480p)
         pvmode->width=720;
         pvmode->height=480;
-        pvmode->xmargin=0;
+        pvmode->xmargin=20;
         pvmode->ymargin=0;
 
         if (video_encoder==ENCODER_XCALIBUR) {
@@ -262,7 +262,7 @@ void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pvmode) {
         case VIDEO_MODE_640x480:
             pvmode->width=640;
             pvmode->height=480;
-            pvmode->xmargin=0;
+            pvmode->xmargin=20;
             pvmode->ymargin=0;
             break;
         case VIDEO_MODE_640x576:

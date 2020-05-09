@@ -18,7 +18,7 @@
 #define XENIUM_FLASH_SECTOR_SIZE 0x10000
 
 #define XENIUM_BANK_TSOP        0
-#define XENIUM_BANK_CROMWELL    1
+#define XENIUM_BANK_BOOTLOADER  1
 #define XENIUM_BANK_XENIUMOS    2
 #define XENIUM_BANK_1           3
 #define XENIUM_BANK_2           4
@@ -37,24 +37,22 @@
 #define XENIUM_SETTINGS_OFFSET (0x1FA000-0x1C0000)
 #define XENIUM_SETTINGS_SECTOR_SIZE 0x2000 //8kbytes
 #define XENIUM_MAX_BIOS_NAME_LENGTH 32
+#define XENIUM_MAX_BANKS 4
 
-typedef struct flash_bank {
-    u8 bank_used;
+typedef struct __attribute__((__packed__)) {
+    u8 bank_used; //0 if not used, other to actual xenium cpld bank number
     u8 bios_led_colour;
     u8 bios_name[XENIUM_MAX_BIOS_NAME_LENGTH];
 	u32 bios_size;
 } flash_bank;
 
-typedef struct xenium_settings {
+typedef struct __attribute__((__packed__)) {
     u8 default_bank;
     u8 instant_boot;
     u8 quick_boot;
-    flash_bank flash_bank1;
-    flash_bank flash_bank2;
-    flash_bank flash_bank3;
-    flash_bank flash_bank4;
+    flash_bank flash_bank[4];
     u8 eeprom[256];
-	u16 checksum; //checksum of the settings struct  excluding itself
+	u8 checksum; //checksum of the settings struct  excluding itself
 } xenium_settings;
 
 void xenium_set_bank(u8 bank);

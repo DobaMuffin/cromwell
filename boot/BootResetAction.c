@@ -217,9 +217,29 @@ extern void BootResetAction ( void ) {
     // if we made it this far, lets have a solid green LED to celebrate
     setLED("gggg");
     xenium_set_led(XENIUM_LED_OFF);
-    printk("Xenium detected: %u, Currently on bank %u\n",xenium_is_detected(), 
+
+    u8 xenium_present = xenium_is_detected();
+    printk("Xenium detected: %u, Currently on bank %u\n",xenium_present, 
                                                          xenium_get_bank());
-    wait_ms(2000);
+
+    if(!xenium_present){
+        printf("\2ERROR XENIUM NOT DETECTED\n");
+        while(1);
+    }
+    u8 boot_bank = xenium_get_bank();
+    xenium_settings settings;
+    xenium_read_settings(&settings);
+    
+    if(boot_bank != XENIUM_BANK_BOOTLOADER){
+        printk("You booted into this BIOS from XeniumOS\n");
+        printk("Setting bank %u as used\n", boot_bank);
+        settings.flash_bank[0].bank_used = boot_bank;
+        settings.flash_bank[0].bios_size = 0x40000;
+        strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
+        xenium_update_settings(&settings);
+		xenium_read_settings(&settings);
+    }
+    //wait_ms(20000);
 
     while(1) {
         TextMenu(TextMenuInit(),NULL);

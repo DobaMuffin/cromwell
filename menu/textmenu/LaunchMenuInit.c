@@ -11,65 +11,74 @@
 #include "TextMenu.h"
 #include "ResetMenuActions.h"
 #include "VideoInitialization.h"
+#include "xenium.h"
 
-TEXTMENU *TextMenuInit(void) {
+
+u8 banks[11] = {0,1,2,3,4,5,6,7,8,9,10};
+
+TEXTMENU *LaunchMenuInit(void) {
 
     TEXTMENUITEM *itemPtr;
     TEXTMENU *menuPtr;
-
+    
+    xenium_settings settings;
+    xenium_read_settings(&settings);
+    
     //Create the root menu - MANDATORY
     menuPtr = malloc(sizeof(TEXTMENU));
     strcpy(menuPtr->szCaption, "");
     menuPtr->firstMenuItem=NULL;
+    
+    for(u32 i = 0; i < XENIUM_MAX_BANKS; i ++){
+		printk("here\n");
+        if(settings.flash_bank[i].bank_used != 0){
+			printk("LaunchMenuInit bank %u used\n",i);
+            itemPtr = malloc(sizeof(TEXTMENUITEM));
+            memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+            strcpy(itemPtr->szCaption, settings.flash_bank[i].bios_name);
+            //itemPtr->functionPtr = XeniumBootBank;
+            //itemPtr->functionDataPtr = (void*)(&settings.flash_bank[i].bank_used);
+            itemPtr->functionPtr = NULL;
+            itemPtr->functionDataPtr = NULL;
+			TextMenuAddItem(menuPtr, itemPtr);
+        }
+    }
 
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Launch Menu");
-    itemPtr->functionPtr=DrawChildTextMenu;
-    itemPtr->functionDataPtr = (void *)LaunchMenuInit();
-    TextMenuAddItem(menuPtr, itemPtr);
-
-    itemPtr = malloc(sizeof(TEXTMENUITEM));
-    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Disk Tools");
-    itemPtr->functionPtr=DrawChildTextMenu;
-    itemPtr->functionDataPtr = (void *)PhyMenuInit();
-    TextMenuAddItem(menuPtr, itemPtr);
-
-    itemPtr = malloc(sizeof(TEXTMENUITEM));
-    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "EEprom Tools");
-    itemPtr->functionPtr=DrawChildTextMenu;
-    itemPtr->functionDataPtr = (void *)PhyMenuInit();
-    TextMenuAddItem(menuPtr, itemPtr);
-
-    itemPtr = malloc(sizeof(TEXTMENUITEM));
-    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Settings");
-    itemPtr->functionPtr=DrawChildTextMenu;
-    itemPtr->functionDataPtr = (void *)PhyMenuInit();
-    TextMenuAddItem(menuPtr, itemPtr);
-
-    itemPtr = malloc(sizeof(TEXTMENUITEM));
-    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Reboot (Slow)");
-    itemPtr->functionPtr=SlowReboot;
+    strcpy(itemPtr->szCaption, "--------------------");
+    itemPtr->functionPtr = NULL;
     itemPtr->functionDataPtr = NULL;
     TextMenuAddItem(menuPtr, itemPtr);
 
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Reboot (Fast)");
-    itemPtr->functionPtr=QuickReboot;
+    strcpy(itemPtr->szCaption, "Add A New Item");
+    itemPtr->functionPtr = NULL;
     itemPtr->functionDataPtr = NULL;
     TextMenuAddItem(menuPtr, itemPtr);
 
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Power Off");
-    itemPtr->functionPtr=PowerOff;
+    strcpy(itemPtr->szCaption, "Remove An Item");
+    itemPtr->functionPtr = NULL;
     itemPtr->functionDataPtr = NULL;
     TextMenuAddItem(menuPtr, itemPtr);
+
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Rename An Item");
+    itemPtr->functionPtr = NULL;
+    itemPtr->functionDataPtr = NULL;
+    TextMenuAddItem(menuPtr, itemPtr);
+    
+    itemPtr = malloc(sizeof(TEXTMENUITEM));
+    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
+    strcpy(itemPtr->szCaption, "Set A Default Item");
+    itemPtr->functionPtr = NULL;
+    itemPtr->functionDataPtr = NULL;
+    TextMenuAddItem(menuPtr, itemPtr);
+
 
     return menuPtr;
 }
