@@ -21,5 +21,5 @@
 //#include "xboxfb.h"
 
 int xcalibur_calc_mode(xbox_video_mode * mode, struct riva_regs * riva_out);
-int xcalibur_calc_hdtv_mode(xbox_hdtv_mode hdtv_mode, int dotClock, void **encoder_regs);
+int xcalibur_calc_hdtv_mode(xbox_hdtv_mode hdtv_mode, int dotClock, volatile void **encoder_regs);
 #endif

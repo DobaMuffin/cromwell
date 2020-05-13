@@ -26,6 +26,8 @@
 #include "BootVgaInitialization.h"
 #include "encoder.h"
 #include "xcalibur.h"
+#include "focus.h"
+#include "conexant.h"
 
 void DetectVideoEncoder(void) {
     if (I2CTransmitByteGetReturn(0x45,0x00) != ERR_I2C_ERROR_BUS) video_encoder = ENCODER_CONEXANT;
@@ -218,13 +220,13 @@ void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pvmode) {
         pll_int = (unsigned char)((double)27027 * 6.0 / 13.5e3 + 0.5);
         switch (video_encoder) {
         case ENCODER_CONEXANT:
-            encoder_ok = conexant_calc_hdtv_mode(hdtv_mode, pll_int, &(newmode.encoder_regs));
+            encoder_ok = conexant_calc_hdtv_mode(hdtv_mode, pll_int, (volatile void **)&(newmode.encoder_regs));
             break;
         case ENCODER_FOCUS:
-            encoder_ok = focus_calc_hdtv_mode(hdtv_mode, pll_int, &(newmode.encoder_regs));
+            encoder_ok = focus_calc_hdtv_mode(hdtv_mode, pll_int, (volatile void **)&(newmode.encoder_regs));
             break;
         case ENCODER_XCALIBUR:
-            encoder_ok = xcalibur_calc_hdtv_mode(hdtv_mode, pll_int, &(newmode.encoder_regs));
+            encoder_ok = xcalibur_calc_hdtv_mode(hdtv_mode, pll_int, (volatile void **)&(newmode.encoder_regs));
             break;
         }
     } else if ((av_type == AV_VGA_SOG) || (av_type == AV_VGA)) {
@@ -249,7 +251,7 @@ void BootVgaInitializationKernelNG(CURRENT_VIDEO_MODE_DETAILS * pvmode) {
 
         switch (video_encoder) {
         case ENCODER_CONEXANT:
-            encoder_ok = conexant_calc_vga_mode(av_type, pll_int, &(newmode.encoder_regs));
+            encoder_ok = conexant_calc_vga_mode(av_type, pll_int, (volatile void **)&(newmode.encoder_regs));
             break;
         case ENCODER_FOCUS:
         case ENCODER_XCALIBUR:

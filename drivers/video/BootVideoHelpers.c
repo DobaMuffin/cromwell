@@ -13,34 +13,23 @@
 // includes an antialiased (4bpp) proportional bitmap font (n x 16 pixel)
 
 
-#include  "boot.h"
+#include "boot.h"
 #include "video.h"
 #include "memory_layout.h"
 //#include "string.h"
-#include "fontx16.h"  // brings in font struct
 #include "fontx8.h"
 #include <stdarg.h>
 #include "decode-jpg.h"
+#include "BootVideoHelpers.h"
 #define WIDTH_SPACE_PIXELS 5
 
 // returns number of x pixels taken up by ascii character bCharacter
 
 unsigned int BootVideoGetCharacterWidth(u8 bCharacter, bool fDouble) {
-    unsigned int nStart, nWidth;
-    int nSpace=WIDTH_SPACE_PIXELS;
-
-    if(fDouble) nSpace=8;
-
-    // we only have glyphs for 0x21 through 0x7e inclusive
-
-    if(bCharacter<0x21) return nSpace;
-    if(bCharacter>0x7e) return nSpace;
-
-    nStart=waStarts[bCharacter-0x21];
-    nWidth=waStarts[bCharacter-0x20]-nStart;
-
-    if(fDouble) return nWidth<<1;
-    else return nWidth;
+    if(fDouble)
+        return font8x8_basic_width * 2;
+    
+    return font8x8_basic_width;
 }
 
 // returns number of x pixels taken up by string
@@ -59,11 +48,7 @@ unsigned int BootVideoGetStringTotalWidth(const char * szc) {
     return nWidth;
 }
 
-// convert pixel count to size of memory in bytes required to hold it, given the character height
 
-unsigned int BootVideoFontWidthToBitmapBytecount(unsigned int uiWidth) {
-    return (uiWidth << 2) * uiPixelsY;
-}
 
 void BootVideoJpegBlitBlend(
     u8 *pDst,

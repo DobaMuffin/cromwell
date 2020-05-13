@@ -18,11 +18,11 @@
 int xcalibur_calc_hdtv_mode(
     xbox_hdtv_mode hdtv_mode,
     int dotClock,
-    void **regs
+    volatile void **regs
 ) {
     *regs = (void *)malloc(0x90*sizeof(char)*4);
     //Only 480p so far, sorry!
-    memcpy(*regs,&HDTV_XCal_Vals_480p[0],0x90*sizeof(char)*4);
+    memcpy((void*)*regs,&HDTV_XCal_Vals_480p[0],0x90*sizeof(char)*4);
     return 1;
 }
 

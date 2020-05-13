@@ -1,6 +1,8 @@
 #ifndef _XENIUM_H_
 #define _XENIUM_H_
 
+#include "cromwell_types.h"
+
 #define XENIUM_REGISTER_BANKING 0x00EF
 #define XENIUM_REGISTER_LED 0x00EE
 
@@ -58,7 +60,7 @@ typedef struct __attribute__((__packed__)) {
 void xenium_set_bank(u8 bank);
 void xenium_set_led(u8 led);
 u8 xenium_get_bank(void);
-u8 xenium_is_detected();
+u8 xenium_is_detected(void);
 void xenium_erase_bank(u8 bank);
 void xenium_write_bank(u8 bank, u8* data);
 void xenium_read_settings(xenium_settings* settings);

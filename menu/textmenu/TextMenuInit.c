@@ -11,6 +11,10 @@
 #include "TextMenu.h"
 #include "ResetMenuActions.h"
 #include "VideoInitialization.h"
+#include "LaunchMenuActions.h"
+#include "xenium.h"
+
+extern xenium_settings settings;
 
 TEXTMENU *TextMenuInit(void) {
 
@@ -25,8 +29,8 @@ TEXTMENU *TextMenuInit(void) {
     itemPtr = malloc(sizeof(TEXTMENUITEM));
     memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
     strcpy(itemPtr->szCaption, "Launch Menu");
-    itemPtr->functionPtr=DrawChildTextMenu;
-    itemPtr->functionDataPtr = (void *)LaunchMenuInit();
+    itemPtr->functionPtr = BiosList;
+    itemPtr->functionDataPtr = NULL;
     TextMenuAddItem(menuPtr, itemPtr);
 
     itemPtr = malloc(sizeof(TEXTMENUITEM));

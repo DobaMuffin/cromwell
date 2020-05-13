@@ -283,7 +283,7 @@ struct usbdevfs_hub_portinfo {
 #define MODULE_AUTHOR(a)
 #define MODULE_DESCRIPTION(a)
 #define MODULE_LICENSE(a)
-#define MODULE_DEVICE_TABLE(type,name) void* module_table_##name=&name
+#define MODULE_DEVICE_TABLE(type,name) const void* module_table_##name=&name
 
 #define __devinit
 #define __exit

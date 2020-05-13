@@ -96,5 +96,4 @@ struct fat_bpb {
 
 #define FAT_LONGDIR_ID(entry) \
   (*((unsigned char *) (entry)))
-#define FAT_LONGDIR_ALIASCHECKSUM(entry) \
-  (*((unsigned char *) (entry+13)))
+#define FAT_LONGDIR_ALIASCHECKSUM(entry) (*((unsigned char *) (entry+13)))

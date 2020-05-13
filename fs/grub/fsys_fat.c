@@ -22,6 +22,7 @@
 #include "shared.h"
 #include "filesys.h"
 #include "fat.h"
+#include "boot.h"
 
 struct fat_superblock {
     int fat_offset;

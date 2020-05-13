@@ -8,6 +8,7 @@
 #include "shared.h"
 #include "BootEEPROM.h"
 #include "BootIde.h"
+#include "BootVideoHelpers.h"
 
 #undef sprintf
 

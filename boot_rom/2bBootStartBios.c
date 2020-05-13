@@ -15,6 +15,7 @@
 
 #include "2bload.h"
 #include "sha1.h"
+#include "LED.h"
 
 extern int decompress_kernel(char*out, char *data, int len);
 

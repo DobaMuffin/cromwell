@@ -34,6 +34,8 @@ extern volatile int nInteruptable;
 volatile CURRENT_VIDEO_MODE_DETAILS vmode;
 extern KNOWN_FLASH_TYPE aknownflashtypesDefault[];
 
+xenium_settings settings;
+
 //////////////////////////////////////////////////////////////////////
 //
 //  BootResetAction()
@@ -223,24 +225,41 @@ extern void BootResetAction ( void ) {
                                                          xenium_get_bank());
 
     if(!xenium_present){
-        printf("\2ERROR XENIUM NOT DETECTED\n");
-        while(1);
+        printf("\2ERROR XENIUM NOT DETECTED\n\n");
+        //while(1);
     }
     u8 boot_bank = xenium_get_bank();
-    xenium_settings settings;
+
     xenium_read_settings(&settings);
-    
+	    
     if(boot_bank != XENIUM_BANK_BOOTLOADER){
         printk("You booted into this BIOS from XeniumOS\n");
         printk("Setting bank %u as used\n", boot_bank);
-        settings.flash_bank[0].bank_used = boot_bank;
-        settings.flash_bank[0].bios_size = 0x40000;
-        strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
-        xenium_update_settings(&settings);
-		xenium_read_settings(&settings);
+        //settings.flash_bank[boot_bank - 3].bank_used = boot_bank;
+        //settings.flash_bank[boot_bank - 3].bios_size = 0x40000;
+        //strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
+        //xenium_update_settings(&settings);
+        //xenium_read_settings(&settings);
     }
-    //wait_ms(20000);
+    wait_ms(20000);
 
+	//Populate dummy data for testing
+	
+    settings.flash_bank[0].bank_used = 3;
+    settings.flash_bank[0].bios_size = 0x40000;
+    strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
+	
+    settings.flash_bank[1].bank_used = 4;
+    settings.flash_bank[1].bios_size = 0x40000;
+    strcpy(settings.flash_bank[1].bios_name,"EvoxM8");
+	
+    settings.flash_bank[2].bank_used = 5;
+    settings.flash_bank[2].bios_size = 0x40000;
+    strcpy(settings.flash_bank[2].bios_name,"IND-BIOS");
+
+    xenium_update_settings(&settings);
+    xenium_read_settings(&settings);
+	
     while(1) {
         TextMenu(TextMenuInit(),NULL);
     }

@@ -51,6 +51,65 @@ static const unsigned char focus_defaults[0xc4] = {
     /*0xc0*/ 0x00,0x00,0xee,0x00
 };
 
+int focus_calc_pll_settings(focus_pll_settings *settings, volatile char *regs) {
+    int m, n, p;
+    long dotclock = (*settings).dotclock;
+    int pll_multiplier;
+    long ncon, ncod;
+
+    ncon = (*settings).vga_htotal * (*settings).vga_vtotal;
+
+    //Multipliers between 1 and 6 are the limit as output clock cant be >150MHz
+    //The lower the multiplier, the more stable the PLL (theoretically)
+    for (pll_multiplier=4; pll_multiplier<6; pll_multiplier++) {
+        long nco_out_clk;
+        ncod = (*settings).tv_htotal * (*settings).tv_vtotal * pll_multiplier;
+        //NCO output clock is the reference clock (27MHz) multiplied by
+        //the ncon/ncod fraction.
+        nco_out_clk = 27000000*(ncon/(float)ncod);
+        for (n=2; n<270; ++n) {
+            //PLL input clock is NCO output clock divided by N
+            //Valid range is 100kHz to 1000kHz
+            long pll_in_clk = nco_out_clk/n;
+            if ( pll_in_clk >=100000 && pll_in_clk <=1000000) {
+                for (m=2; m<3000; ++m) {
+                    //PLL output clock is PLL input clock multiplied
+                    //by M. Valid range is 100MHz to 300MHz
+                    long pll_out_clk = pll_in_clk * m;
+                    if (pll_out_clk >=100000000 && pll_out_clk <= 300000000) {
+                        //Output clocks are PLL output clock divided by P.
+                        //Valid range is anything LESS than 150MHz, but
+                        //it must match the incoming pixel clock rate.
+                        long output_clk = pll_out_clk/pll_multiplier;
+                        if (output_clk == dotclock || output_clk+1 == dotclock || output_clk-1 == dotclock) {
+                            //Got it - the pll is now correctly aligned
+                            //Set up the PLL registers
+                            regs[0x10] = (ncon)&0xFF;
+                            regs[0x11] = (ncon>>8)&0xFF ;
+                            regs[0x12] = (ncon>>16)&0xFF ;
+                            regs[0x13] = (ncon>>24)&0xFF ;
+                            regs[0x14] = (ncod)&0xFF ;
+                            regs[0x15] = (ncod>>8)&0xFF ;
+                            regs[0x16] = (ncod>>16)&0xFF ;
+                            regs[0x17] = (ncod>>24)&0xFF ;
+
+                            regs[0x18] = (m-17)&0xFF;
+                            regs[0x19] = ((m-17)>>8)&0xFF;
+                            regs[0x1A] = (n-1)&0xFF ;
+                            regs[0x1B] = ((n-1)>>8)&0xFF ;
+                            regs[0x1C] = (pll_multiplier-1)&0xFF;
+                            regs[0x1D] = (pll_multiplier-1)&0xFF;
+                            return 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //Seems no valid solution was possible
+    return 0;
+}
+
 int focus_calc_hdtv_mode(
     xbox_hdtv_mode hdtv_mode,
     unsigned char pll_int,
@@ -184,7 +243,7 @@ int focus_calc_hdtv_mode(
 int focus_calc_mode(xbox_video_mode * mode, struct riva_regs * riva_out) {
     unsigned char b;
 
-    volatile unsigned char* regs;
+    unsigned char* regs;
     int tv_htotal, tv_vtotal, tv_vactive, tv_hactive;
     int vga_htotal, vga_vtotal;
     int vsc, hsc;
@@ -338,63 +397,3 @@ int focus_calc_mode(xbox_video_mode * mode, struct riva_regs * riva_out) {
 
     return 1;
 }
-
-int focus_calc_pll_settings(focus_pll_settings *settings, volatile char *regs) {
-    int m, n, p;
-    long dotclock = (*settings).dotclock;
-    int pll_multiplier;
-    long ncon, ncod;
-
-    ncon = (*settings).vga_htotal * (*settings).vga_vtotal;
-
-    //Multipliers between 1 and 6 are the limit as output clock cant be >150MHz
-    //The lower the multiplier, the more stable the PLL (theoretically)
-    for (pll_multiplier=4; pll_multiplier<6; pll_multiplier++) {
-        long nco_out_clk;
-        ncod = (*settings).tv_htotal * (*settings).tv_vtotal * pll_multiplier;
-        //NCO output clock is the reference clock (27MHz) multiplied by
-        //the ncon/ncod fraction.
-        nco_out_clk = 27000000*(ncon/(float)ncod);
-        for (n=2; n<270; ++n) {
-            //PLL input clock is NCO output clock divided by N
-            //Valid range is 100kHz to 1000kHz
-            long pll_in_clk = nco_out_clk/n;
-            if ( pll_in_clk >=100000 && pll_in_clk <=1000000) {
-                for (m=2; m<3000; ++m) {
-                    //PLL output clock is PLL input clock multiplied
-                    //by M. Valid range is 100MHz to 300MHz
-                    long pll_out_clk = pll_in_clk * m;
-                    if (pll_out_clk >=100000000 && pll_out_clk <= 300000000) {
-                        //Output clocks are PLL output clock divided by P.
-                        //Valid range is anything LESS than 150MHz, but
-                        //it must match the incoming pixel clock rate.
-                        long output_clk = pll_out_clk/pll_multiplier;
-                        if (output_clk == dotclock || output_clk+1 == dotclock || output_clk-1 == dotclock) {
-                            //Got it - the pll is now correctly aligned
-                            //Set up the PLL registers
-                            regs[0x10] = (ncon)&0xFF;
-                            regs[0x11] = (ncon>>8)&0xFF ;
-                            regs[0x12] = (ncon>>16)&0xFF ;
-                            regs[0x13] = (ncon>>24)&0xFF ;
-                            regs[0x14] = (ncod)&0xFF ;
-                            regs[0x15] = (ncod>>8)&0xFF ;
-                            regs[0x16] = (ncod>>16)&0xFF ;
-                            regs[0x17] = (ncod>>24)&0xFF ;
-
-                            regs[0x18] = (m-17)&0xFF;
-                            regs[0x19] = ((m-17)>>8)&0xFF;
-                            regs[0x1A] = (n-1)&0xFF ;
-                            regs[0x1B] = ((n-1)>>8)&0xFF ;
-                            regs[0x1C] = (pll_multiplier-1)&0xFF;
-                            regs[0x1D] = (pll_multiplier-1)&0xFF;
-                            return 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    //Seems no valid solution was possible
-    return 0;
-}
-

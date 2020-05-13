@@ -27,6 +27,7 @@
 // x = Off
 //
 // E.g. rgog will cycle through red, green, orange, green and then loop.
+#include "boot.h"
 
 void setLED(char *pattern) {
     int i, r, g;

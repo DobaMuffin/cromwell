@@ -18,7 +18,7 @@ GITREV = $(shell \
     echo "unknown"; \
   fi)
 
-ETHERBOOT := yes
+ETHERBOOT := no
 INCLUDE = -I$(TOPDIR)/grub -I$(TOPDIR)/include -I$(TOPDIR)/ -I./ -I$(TOPDIR)/fs/cdrom \
 	-I$(TOPDIR)/fs/fatx -I$(TOPDIR)/fs/grub -I$(TOPDIR)/lib/eeprom -I$(TOPDIR)/lib/crypt \
 	-I$(TOPDIR)/drivers/video -I$(TOPDIR)/drivers/ide -I$(TOPDIR)/drivers/flash -I$(TOPDIR)/lib/misc \
@@ -104,13 +104,13 @@ OBJECTS-CROM += $(TOPDIR)/obj/VideoMenuInit.o
 OBJECTS-CROM += $(TOPDIR)/obj/FlashMenuInit.o
 OBJECTS-CROM += $(TOPDIR)/obj/HddMenuInit.o
 OBJECTS-CROM += $(TOPDIR)/obj/PhyMenuInit.o
-OBJECTS-CROM += $(TOPDIR)/obj/LaunchMenuInit.o
 OBJECTS-CROM += $(TOPDIR)/obj/MenuActions.o
 OBJECTS-CROM += $(TOPDIR)/obj/VideoMenuActions.o
 OBJECTS-CROM += $(TOPDIR)/obj/ResetMenuActions.o
 OBJECTS-CROM += $(TOPDIR)/obj/FlashMenuActions.o
 OBJECTS-CROM += $(TOPDIR)/obj/HddMenuActions.o
 OBJECTS-CROM += $(TOPDIR)/obj/PhyMenuActions.o
+OBJECTS-CROM += $(TOPDIR)/obj/LaunchMenuActions.o
 OBJECTS-CROM += $(TOPDIR)/obj/Confirm.o
 OBJECTS-CROM += $(TOPDIR)/obj/LoadLinux.o
 OBJECTS-CROM += $(TOPDIR)/obj/LoadReactOS.o
@@ -178,7 +178,7 @@ BOOT_ETH_DIR = boot_eth/ethboot
 BOOT_ETH_SUBDIRS = ethsubdirs
 endif
 
-all: clean resources $(BOOT_ETH_SUBDIRS) cromsubdirs xromwell.xbe vmlboot $(BOOT_ETH_DIR) cromwell.bin imagecompress 
+all: clean resources $(BOOT_ETH_SUBDIRS) cromsubdirs xromwell.xbe cromwell.bin imagecompress 
 
 ifeq ($(ETHERBOOT), yes)
 ethsubdirs: $(patsubst %, _dir_%, $(ETH_SUBDIRS))
@@ -250,5 +250,3 @@ imagecompress: obj/image-crom.bin bin/imagebld
 	gzip -9 obj/image-crom.bin.tmp
 	bin/imagebld -rom obj/2blimage.bin obj/image-crom.bin.tmp.gz image/cromwell.bin image/cromwell_1024.bin
 	bin/imagebld -xbe xbe/xromwell.xbe obj/image-crom.bin
-	bin/imagebld -vml boot_vml/disk/vmlboot obj/image-crom.bin 
-

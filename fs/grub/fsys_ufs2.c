@@ -58,7 +58,7 @@
 
 #include "shared.h"
 #include "filesys.h"
-
+#include "boot.h"
 #include "ufs2.h"
 
 /* used for filesystem map blocks */

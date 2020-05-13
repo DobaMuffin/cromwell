@@ -291,6 +291,20 @@ void BootStopUSB(void);
 void BootStartUSB(void);
 void USBGetEvents(void);
 
+///////// i2cio.c
+
+int WriteToSMBus(u8 Address,u8 bRegister,u8 Size,u32 Data_to_smbus);
+int ReadfromSMBus(u8 Address,u8 bRegister,u8 Size,u32 *Data_to_smbus);
+int I2CWriteWordtoRegister(u8 bPicAddressI2cFormat,u8 bRegister,u16 wDataToWrite);
+int I2CTransmitByteGetReturn(u8 bPicAddressI2cFormat, u8 bDataToWrite);
+int I2CTransmitWord(u8 bPicAddressI2cFormat, u16 wDataToWrite);
+int I2CWriteBytetoRegister(u8 bPicAddressI2cFormat, u8 bRegister, u8 wDataToWrite);
+void I2CModifyBits(u8 bAds, u8 bReg, u8 bData, u8 bMask);
+bool I2CGetTemperature(int * pnLocalTemp, int * pExternalTemp);
+void I2CRebootQuick(void);
+void I2CRebootSlow(void);
+void I2CPowerOff(void);
+
 #include "xpad.h"
 
 extern struct xpad_data XPAD_current[4];
@@ -338,9 +352,11 @@ void HMAC_SHA1( unsigned char *result,
 
 char *strrchr0(char *string, char ch);
 
-void setLED(void *pattern);
+void setLED(char *pattern);
 
 int strlen(const char * s);
+int strncmp(const char * cs,const char * ct,size_t count);
+char * strsep(char **s, const char *ct);
 int sprintf(char * buf, const char *fmt, ...);
 char * strncpy(char * dest,const char *src,int count);
 char * strstr(const char * s1,const char * s2);

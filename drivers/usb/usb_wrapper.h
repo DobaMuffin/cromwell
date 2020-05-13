@@ -4,3 +4,5 @@
 #define CONFIG_PCI
 
 #include "linux/usb.h"
+void UsbKeyBoardInit(void);
+void UsbKeyBoardRemove(void);
