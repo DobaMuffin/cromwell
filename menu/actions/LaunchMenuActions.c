@@ -13,18 +13,28 @@
 
 u8 exit = 0;
 extern volatile CURRENT_VIDEO_MODE_DETAILS vmode;
-extern xenium_settings settings;
+extern volatile xenium_settings settings;
 
-#define EXIT_
+static void bios_launch(flash_bank* bios){
+    //See https://xboxdevwiki.net/PIC
+    int pic_scratch = I2CTransmitByteGetReturn(0x10, 0x1B);
+    I2CTransmitWord(0x10, 0x1B00 | ((u8)pic_scratch & ~0x04)); //Clear flag at 0x04 to force boot animation on reboot.
+    
+    xenium_set_bank(bios->bank_used);
+    xenium_set_led(bios->bios_led_colour);
+    BootStopUSB();
+
+    I2CRebootQuick();
+}
 
 static void bios_delete(flash_bank* bios){
-	VIDEO_ATTR=0xFFFF0000;
-	printk("Width: %u Height: %u\n",vmode.width, vmode.height);
-	VIDEO_CURSOR_POSX = vmode.width/2;
-    VIDEO_CURSOR_POSY = vmode.height/2;
-	printk("\2Deleting %s...",bios->bios_name);
+	//VIDEO_ATTR=0xFFFF0000;
+	//printk("Width: %u Height: %u\n",vmode.width, vmode.height);
+	//VIDEO_CURSOR_POSX = vmode.width/2;
+    //VIDEO_CURSOR_POSY = vmode.height/2;
+	//printk("\2Deleting %s...",bios->bios_name);
 	bios->bank_used = 0;
-	VIDEO_ATTR=0xffffffff;
+	//VIDEO_ATTR=0xffffffff;
 	breakOutOfMenu = 1;
 	exit = LAUNCHMENU_EXIT;
 }
@@ -48,89 +58,52 @@ static void exit_menu(__attribute__((unused)) void * stub){
 	breakOutOfMenu = 1;
 }
 
-int BiosAddItem() {
+static int _BiosAddItem() {
 	
 	return 0;
 }
 
-int BiosListItems() {
-	TEXTMENU menu;
-	TEXTMENUITEM *itemPtr;
-	TEXTMENUITEM bank[XENIUM_MAX_BANKS];
-	TEXTMENUITEM Spacer, AddItem;
-	exit = 0;
-	memset(&menu,0x00,sizeof(TEXTMENU));
-	
-    //Create the root menu - MANDATORY
-    strcpy(menu.szCaption, "");
-	
-    for(u32 i = 0; i < XENIUM_MAX_BANKS; i ++){
-        if(settings.flash_bank[i].bank_used != 0){
-            memset(&bank[i],0x00,sizeof(TEXTMENUITEM));
-            strcpy(bank[i].szCaption, settings.flash_bank[i].bios_name);
-            bank[i].functionPtr = BiosSelectItem;
-            bank[i].functionDataPtr = &settings.flash_bank[i];
-			TextMenuAddItem(&menu, &bank[i]);
-        }
-    }
-
-    itemPtr = &Spacer;
-    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "--------------------");
-    itemPtr->functionPtr = NULL;
-    itemPtr->functionDataPtr = NULL;
-    TextMenuAddItem(&menu, itemPtr);
-
-    itemPtr = &AddItem;
-    memset(itemPtr,0x00,sizeof(TEXTMENUITEM));
-    strcpy(itemPtr->szCaption, "Add A New Item");
-    itemPtr->functionPtr = NULL;
-    itemPtr->functionDataPtr = NULL;
-    TextMenuAddItem(&menu, itemPtr);
-	
-    //Draw the menu
-    TextMenu(&menu, menu.firstMenuItem);
-    return 0;
-}
-
-int BiosSelectItem(flash_bank* bios) {
+static int _BiosSelectItem(flash_bank* bios) {
     TEXTMENU menu;
-	TEXTMENUITEM* itemPtr;
-    TEXTMENUITEM DeleteItem, RenameItem, SetDefaultItem, BackItem;
+    TEXTMENUITEM LaunchItem, DeleteItem, RenameItem, SetDefaultItem, BackItem;
+    memset(&menu, 0x00, sizeof(TEXTMENU));
+    memset(&LaunchItem, 0x00, sizeof(TEXTMENUITEM));
+    memset(&DeleteItem, 0x00, sizeof(TEXTMENUITEM));
+    memset(&RenameItem, 0x00, sizeof(TEXTMENUITEM));
+    memset(&SetDefaultItem, 0x00, sizeof(TEXTMENUITEM));
+    memset(&BackItem, 0x00, sizeof(TEXTMENUITEM));
+    
 
 	//Create the root menu - MANDATORY
     strncpy(menu.szCaption, bios->bios_name, MENUCAPTIONSIZE);
+
+    strcpy(LaunchItem.szCaption, "Launch BIOS");
+    LaunchItem.functionPtr = bios_launch;
+    LaunchItem.functionDataPtr = bios;
+    TextMenuAddItem(&menu, &LaunchItem);
 	
-	itemPtr = &DeleteItem;
-    memset(itemPtr, 0x00, sizeof(TEXTMENUITEM));
-	strcpy(itemPtr->szCaption, "Delete BIOS from Flash");
-    itemPtr->functionPtr = bios_delete;
-    itemPtr->functionDataPtr = bios;
-    TextMenuAddItem(&menu, itemPtr);
+	strcpy(DeleteItem.szCaption, "Delete BIOS");
+    DeleteItem.functionPtr = bios_delete;
+    DeleteItem.functionDataPtr = bios;
+    TextMenuAddItem(&menu, &DeleteItem);
 	
-	itemPtr = &RenameItem;
-    memset(itemPtr, 0x00, sizeof(TEXTMENUITEM));
-	strcpy(itemPtr->szCaption, "Rename BIOS");
-    itemPtr->functionPtr = bios_rename;
-    itemPtr->functionDataPtr = bios;
-    TextMenuAddItem(&menu, itemPtr);
+	strcpy(RenameItem.szCaption, "Rename BIOS");
+    RenameItem.functionPtr = bios_rename;
+    RenameItem.functionDataPtr = bios;
+    TextMenuAddItem(&menu, &RenameItem);
 	
-	itemPtr = &SetDefaultItem;
-    memset(itemPtr, 0x00, sizeof(TEXTMENUITEM));
-	strcpy(itemPtr->szCaption, "Set as Default BIOS");
-    itemPtr->functionPtr = bios_set_default;
-    itemPtr->functionDataPtr = bios;
-    TextMenuAddItem(&menu, itemPtr);
+	strcpy(SetDefaultItem.szCaption, "Set as Instant Boot Default");
+    SetDefaultItem.functionPtr = bios_set_default;
+    SetDefaultItem.functionDataPtr = bios;
+    TextMenuAddItem(&menu, &SetDefaultItem);
 	
-	itemPtr = &BackItem;
-    memset(itemPtr, 0x00, sizeof(TEXTMENUITEM));
-	strcpy(itemPtr->szCaption, "Return");
-    itemPtr->functionPtr = exit_menu;
-    itemPtr->functionDataPtr = NULL;
-    TextMenuAddItem(&menu, itemPtr);
+	strcpy(BackItem.szCaption, "Return");
+    BackItem.functionPtr = exit_menu;
+    BackItem.functionDataPtr = NULL;
+    TextMenuAddItem(&menu, &BackItem);
 	
     //Draw the menu
-    TextMenu(&menu, &BackItem);
+    TextMenu(&menu, &LaunchItem);
 	
 	if(exit == 2){
 		breakOutOfMenu = 1;
@@ -141,22 +114,45 @@ int BiosSelectItem(flash_bank* bios) {
     return 1;
 }
 
-void BiosList(){
-	if (!BiosListItems())
-		return;
+static int _BiosListItems(void) {
+	TEXTMENU menu;
+	TEXTMENUITEM bank[XENIUM_MAX_BANKS];
+	TEXTMENUITEM Spacer, AddItem;
+	exit = 0;
+	memset(&menu,0x00,sizeof(TEXTMENU));
+	memset(&bank[0],0x00,sizeof(TEXTMENUITEM) * XENIUM_MAX_BANKS);
+    memset(&Spacer,0x00,sizeof(TEXTMENUITEM));
+    memset(&AddItem,0x00,sizeof(TEXTMENUITEM));
+    
+    //Create the root menu - MANDATORY
+    strcpy(menu.szCaption, "Launch Menu");
+	
+    for(u32 i = 0; i < XENIUM_MAX_BANKS; i ++){
+        if(settings.flash_bank[i].bank_used != 0){
+            strcpy(bank[i].szCaption, settings.flash_bank[i].bios_name);
+            bank[i].functionPtr = _BiosSelectItem;
+            bank[i].functionDataPtr = &settings.flash_bank[i];
+			TextMenuAddItem(&menu, &bank[i]);
+        }
+    }
 
-    while ((risefall_xpad_BUTTON(TRIGGER_XPAD_KEY_A) != 1)) wait_ms(100);
+    strcpy(Spacer.szCaption, "--------------------");
+    Spacer.functionPtr = NULL;
+    Spacer.functionDataPtr = NULL;
+    TextMenuAddItem(&menu, &Spacer);
+
+    strcpy(AddItem.szCaption, "Add A New Item");
+    AddItem.functionPtr = NULL;
+    AddItem.functionDataPtr = NULL;
+    TextMenuAddItem(&menu, &AddItem);
+	
+    //Draw the menu
+    TextMenu(&menu, menu.firstMenuItem);
+    return 0;
 }
 
-void BiosSelected(flash_bank* bios) {
-	if (!BiosSelectItem(bios))
-		return;
-
-    while ((risefall_xpad_BUTTON(TRIGGER_XPAD_KEY_A) != 1)) wait_ms(100);
-}
-
-void BiosAdd(){
-	if (!BiosAddItem())
+void BiosList(void *ignored){
+	if (!_BiosListItems())
 		return;
 
     while ((risefall_xpad_BUTTON(TRIGGER_XPAD_KEY_A) != 1)) wait_ms(100);

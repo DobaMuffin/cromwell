@@ -33,12 +33,12 @@ static u8 xenium_flash_read_byte(u32 address){
 
 static void xenium_flash_read_stream(u32 address, u8* data, u32 len){
     volatile u8 * volatile lpc_mem_map = (u8 *)LPCFlashadress;
-    memcpy(data, (u8*)&lpc_mem_map[address], len);
+    memcpy(data, &lpc_mem_map[address], len);
 }
 
 static void xenium_flash_write_stream(u32 address, u8* data, u32 len){
     volatile u8 * volatile lpc_mem_map = (u8 *)LPCFlashadress;
-    memcpy((u8*)&lpc_mem_map[address], data, len);
+    memcpy(&lpc_mem_map[address], data, len);
 }
 
 static void xenium_flash_reset(void){
@@ -186,7 +186,6 @@ static u8 calc_checksum(u8* data, u32 len){
 void xenium_read_settings(xenium_settings* settings){
     u8 old_bank = xenium_get_bank();
     xenium_set_bank(XENIUM_BANK_RECOVERY);
-	xenium_flash_reset();
     xenium_flash_read_stream(XENIUM_SETTINGS_OFFSET,
                              (u8*)settings, sizeof(xenium_settings));
 
@@ -209,5 +208,6 @@ void xenium_update_settings(xenium_settings* new_settings){
     for (u32 i = 0; i < sizeof(xenium_settings); i++){
         xenium_flash_program_byte(XENIUM_SETTINGS_OFFSET + i, ((u8*)(new_settings))[i]);
     }
+    xenium_flash_reset();
     xenium_set_bank(old_bank);
 }

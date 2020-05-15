@@ -31,7 +31,7 @@ INCLUDE = -I$(TOPDIR)/grub -I$(TOPDIR)/include -I$(TOPDIR)/ -I./ -I$(TOPDIR)/fs/
 CROM_CFLAGS=$(INCLUDE) -m32 -fno-builtin -fno-stack-protector -no-pie -DGITREV=\\\"$(GITREV)\\\"
 
 #You can override these if you wish.
-CFLAGS= -m32 -O2 -g -march=pentium -pipe -fomit-frame-pointer -Wstrict-prototypes -fno-builtin -fno-stack-protector -no-pie
+CFLAGS= -m32 -O2 -g -march=pentium -pipe -fomit-frame-pointer -Wstrict-prototypes -fno-builtin -fno-stack-protector -no-pie -w
 
 # add the option for gcc 3.3 only, again, non-overridable
 ifeq ($(GCC_3.3), 1)

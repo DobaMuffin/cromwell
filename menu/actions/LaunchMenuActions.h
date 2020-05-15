@@ -14,10 +14,4 @@
 #define LAUNCHMENU_EXIT 2
 #define LAUNCHMENU_BACK 1
 
-int BiosSelectItem(flash_bank* bios) ;
-int BiosListItems(void);
-int BiosAddItem(void);
-
-void BiosList(void);
-void BiosSelected(flash_bank* bios);
-void BiosAdd(void);
+void BiosList(void *ignored);

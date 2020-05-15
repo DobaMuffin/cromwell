@@ -14,8 +14,6 @@
 #include "LaunchMenuActions.h"
 #include "xenium.h"
 
-extern xenium_settings settings;
-
 TEXTMENU *TextMenuInit(void) {
 
     TEXTMENUITEM *itemPtr;
@@ -23,6 +21,7 @@ TEXTMENU *TextMenuInit(void) {
 
     //Create the root menu - MANDATORY
     menuPtr = malloc(sizeof(TEXTMENU));
+    memset(menuPtr,0x00,sizeof(TEXTMENU));
     strcpy(menuPtr->szCaption, "");
     menuPtr->firstMenuItem=NULL;
 

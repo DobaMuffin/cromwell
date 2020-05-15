@@ -34,7 +34,7 @@ extern volatile int nInteruptable;
 volatile CURRENT_VIDEO_MODE_DETAILS vmode;
 extern KNOWN_FLASH_TYPE aknownflashtypesDefault[];
 
-xenium_settings settings;
+volatile xenium_settings settings;
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -52,8 +52,8 @@ extern void BootResetAction ( void ) {
     memcpy(&cromwell_loadbank,(void*)(0x03A00000+0x28),4);
     memcpy(&cromwell_Biostype,(void*)(0x03A00000+0x2C),4);
 
-    VIDEO_CURSOR_POSX=40;
-    VIDEO_CURSOR_POSY=140;
+    VIDEO_CURSOR_POSX= 150;
+    VIDEO_CURSOR_POSY= 150;
 
     VIDEO_AV_MODE = 0xff;
     nInteruptable = 0;
@@ -230,35 +230,41 @@ extern void BootResetAction ( void ) {
     }
     u8 boot_bank = xenium_get_bank();
 
+    memset(&settings,0x00,sizeof(xenium_settings));
     xenium_read_settings(&settings);
 	    
     if(boot_bank != XENIUM_BANK_BOOTLOADER){
         printk("You booted into this BIOS from XeniumOS\n");
         printk("Setting bank %u as used\n", boot_bank);
-        //settings.flash_bank[boot_bank - 3].bank_used = boot_bank;
-        //settings.flash_bank[boot_bank - 3].bios_size = 0x40000;
-        //strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
+        settings.flash_bank[boot_bank - 3].bank_used = boot_bank;
+        settings.flash_bank[boot_bank - 3].bios_size = 0x40000;
+        strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
         //xenium_update_settings(&settings);
         //xenium_read_settings(&settings);
     }
-    wait_ms(20000);
+   // wait_ms(20000);
 
 	//Populate dummy data for testing
 	
     settings.flash_bank[0].bank_used = 3;
     settings.flash_bank[0].bios_size = 0x40000;
-    strcpy(settings.flash_bank[0].bios_name,"OpenXeniumOS");
+    settings.flash_bank[0].bios_led_colour = XENIUM_LED_PURPLE;
+    strcpy(settings.flash_bank[0].bios_name,"M8Plus");
 	
     settings.flash_bank[1].bank_used = 4;
     settings.flash_bank[1].bios_size = 0x40000;
-    strcpy(settings.flash_bank[1].bios_name,"EvoxM8");
+    settings.flash_bank[1].bios_led_colour = XENIUM_LED_BLUE;
+    strcpy(settings.flash_bank[1].bios_name,"OpenXeniumOS");
 	
     settings.flash_bank[2].bank_used = 5;
     settings.flash_bank[2].bios_size = 0x40000;
+    settings.flash_bank[2].bios_led_colour = XENIUM_LED_RED;
     strcpy(settings.flash_bank[2].bios_name,"IND-BIOS");
 
-    xenium_update_settings(&settings);
-    xenium_read_settings(&settings);
+    settings.flash_bank[3].bank_used = 0;
+
+    //xenium_update_settings(&settings);
+    //xenium_read_settings(&settings);
 	
     while(1) {
         TextMenu(TextMenuInit(),NULL);

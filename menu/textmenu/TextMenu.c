@@ -35,16 +35,19 @@ void TextMenuDraw(TEXTMENU* menu, TEXTMENUITEM *firstVisibleMenuItem, TEXTMENUIT
     TEXTMENUITEM *item=NULL;
     int menucount;
 
-    VIDEO_CURSOR_POSX=120;
-    VIDEO_CURSOR_POSY=100;
+    static const int MENU_Y = 150;
+    static const int MENU_X = 100;
+
+    VIDEO_CURSOR_POSX=MENU_X;
+    VIDEO_CURSOR_POSY=MENU_Y;
 
     //Draw the menu title.
     VIDEO_ATTR=0xff00ff;
-    printk("\2          %s\n",menu->szCaption);
-    VIDEO_CURSOR_POSY+=50;
+    printk("\2%s\n\n",menu->szCaption);
+    VIDEO_CURSOR_POSY+=16;
 
     //Draw the menu items
-    VIDEO_CURSOR_POSX=120;
+    VIDEO_CURSOR_POSX=MENU_X;
 
     //If we were moving up, the
 
@@ -58,9 +61,8 @@ void TextMenuDraw(TEXTMENU* menu, TEXTMENUITEM *firstVisibleMenuItem, TEXTMENUIT
         if (item == selectedItem) VIDEO_ATTR=0xffef37;
         else VIDEO_ATTR=0xffffff;
         //Font size 2=big.
-        printk("\n\2      %s\n",item->szCaption);
-        printk("\n");
-        printk("\n");
+        printk("\2%s\n\n\n\n",item->szCaption);
+        VIDEO_CURSOR_POSX=MENU_X;
         item=item->nextMenuItem;
     }
     VIDEO_ATTR=0xffffff;
