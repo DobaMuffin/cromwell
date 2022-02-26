@@ -128,26 +128,42 @@ extern void BootResetAction ( void ) {
 	VIDEO_CURSOR_POSX=(vmode.xmargin/*+64*/)*4;
 	printk("Available RAM: %d MB\n",xbox_ram);
 
-	// capture title area
-	VIDEO_ATTR=0xffc8c8c8;
-	printk("Encoder: ");
-	VIDEO_ATTR=0xffc8c800;
-	printk("%s  ", VideoEncoderName());
-	VIDEO_ATTR=0xffc8c8c8;
-	printk("Cable: ");
-	VIDEO_ATTR=0xffc8c800;
-	printk("%s  ", AvCableName());
-
-	if (I2CGetTemperature(&n, &nx)) {
-		VIDEO_ATTR=0xffc8c8c8;
-		printk("CPU Temp: ");
-		VIDEO_ATTR=0xffc8c800;
-		printk("%doC  ", n);
-		VIDEO_ATTR=0xffc8c8c8;
-		printk("M/b Temp: ");
-		VIDEO_ATTR=0xffc8c800;
-		printk("%doC  ", nx);
+	unsigned char *p = (char*) 0xFFFFFE00;
+	int i;
+	printk("\n");
+	printk("MCPX ROM START:");
+	printk("\n");
+	int x = 26;
+	for(i = 0; i < 512; i++){
+		printk("%02x ", p[i]);
+		if(i > x){
+			x = i + 27;
+			printk("\n");
+		}
 	}
+
+	// capture title area
+	// VIDEO_ATTR=0xffc8c8c8;
+	// printk("Encoder: ");
+	// VIDEO_ATTR=0xffc8c800;
+	// printk("%s  ", VideoEncoderName());
+	// VIDEO_ATTR=0xffc8c8c8;
+	// printk("Cable: ");
+	// VIDEO_ATTR=0xffc8c800;
+	// printk("%s  ", AvCableName());
+
+
+
+	// if (I2CGetTemperature(&n, &nx)) {
+	// 	VIDEO_ATTR=0xffc8c8c8;
+	// 	printk("CPU Temp: ");
+	// 	VIDEO_ATTR=0xffc8c800;
+	// 	printk("%doC  ", n);
+	// 	VIDEO_ATTR=0xffc8c8c8;
+	// 	printk("M/b Temp: ");
+	// 	VIDEO_ATTR=0xffc8c800;
+	// 	printk("%doC  ", nx);
+	// }
 
 	printk("\n");
 #endif
@@ -160,14 +176,14 @@ extern void BootResetAction ( void ) {
 	setLED("gggx");
 
 	// set Ethernet MAC address from EEPROM
-        {
-	volatile u8 * pb=(u8 *)0xfef000a8;  // Ethernet MMIO base + MAC register offset (<--thanks to Anders Gustafsson)
-	int n;
-	for(n=5;n>=0;n--) { *pb++=	eeprom.MACAddress[n]; } // send it in backwards, its reversed by the driver
-        }
-#ifndef SILENT_MODE
-	BootEepromPrintInfo();
-#endif
+  //       {
+	// volatile u8 * pb=(u8 *)0xfef000a8;  // Ethernet MMIO base + MAC register offset (<--thanks to Anders Gustafsson)
+	// int n;
+	// for(n=5;n>=0;n--) { *pb++=	eeprom.MACAddress[n]; } // send it in backwards, its reversed by the driver
+  //       }
+// #ifndef SILENT_MODE
+// 	// BootEepromPrintInfo();
+// #endif
 /*
 #ifdef FLASH
 	{
@@ -182,43 +198,43 @@ extern void BootResetAction ( void ) {
 	}
 #endif
 */
-	nTempCursorX=VIDEO_CURSOR_POSX;
-	nTempCursorY=VIDEO_CURSOR_POSY;
-#ifndef SILENT_MODE
-	printk("BOOT: start USB init\n");
-#endif
-	BootStartUSB();
+// 	nTempCursorX=VIDEO_CURSOR_POSX;
+// 	nTempCursorY=VIDEO_CURSOR_POSY;
+// #ifndef SILENT_MODE
+// 	printk("BOOT: start USB init\n");
+// #endif
+// 	BootStartUSB();
 
 	// init the IDE devices
-#ifndef SILENT_MODE
-	VIDEO_ATTR=0xffc8c8c8;
-	printk("Initializing IDE Controller\n");
-#endif
-	BootIdeWaitNotBusy(0x1f0);
-       	wait_ms(200);
-#ifndef SILENT_MODE
-	printk("Ready\n");
-#endif
+// #ifndef SILENT_MODE
+// 	VIDEO_ATTR=0xffc8c8c8;
+// 	printk("Initializing IDE Controller\n");
+// #endif
+// 	BootIdeWaitNotBusy(0x1f0);
+//        	wait_ms(200);
+// #ifndef SILENT_MODE
+// 	printk("Ready\n");
+// #endif
 	// reuse BIOS status area
 
-#ifndef DEBUG_MODE
-	BootVideoClearScreen(&jpegBackdrop, nTempCursorY, VIDEO_CURSOR_POSY+1);  // blank out volatile data area
-#endif
-	VIDEO_CURSOR_POSX=nTempCursorX;
-	VIDEO_CURSOR_POSY=nTempCursorY;
-
-	BootIdeInit();
-	printk("\n");
-
-	nTempCursorMbrX=VIDEO_CURSOR_POSX;
-	nTempCursorMbrY=VIDEO_CURSOR_POSY;
+// #ifndef DEBUG_MODE
+// 	BootVideoClearScreen(&jpegBackdrop, nTempCursorY, VIDEO_CURSOR_POSY+1);  // blank out volatile data area
+// #endif
+// 	VIDEO_CURSOR_POSX=nTempCursorX;
+// 	VIDEO_CURSOR_POSY=nTempCursorY;
+//
+// 	BootIdeInit();
+// 	printk("\n");
+//
+// 	nTempCursorMbrX=VIDEO_CURSOR_POSX;
+// 	nTempCursorMbrY=VIDEO_CURSOR_POSY;
 
 	// if we made it this far, lets have a solid green LED to celebrate
 	setLED("gggg");
 
 //	printk("i2C=%d SMC=%d, IDE=%d, tick=%d una=%d unb=%d\n", nCountI2cinterrupts, nCountInterruptsSmc, nCountInterruptsIde, BIOS_TICK_COUNT, nCountUnusedInterrupts, nCountUnusedInterruptsPic2);
-	IconMenuInit();
-	IconMenu();
+	// IconMenuInit();
+	// IconMenu();
 	//Should never come back here.
 	while(1);
 }
