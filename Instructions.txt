@@ -1,0 +1,30 @@
+Writeup of how I did it. 
+
+- First step is to make the cromwell bios image. This is done by running make at the root of the source code. 
+
+- Next step is to find cromwell.bin in the image folder. This is the newly built image, and needs to be hex edited. 
+
+- Open cromwell.bin in a hex editor. Delete the bytes from 0x0 to 0xFFF so that the data at 0x1000 is now at the start of the binary file.
+
+- The next step is to jump to the FF padding after the Cromwell kernel and delete everything after the kernel. Save the new binary file. 
+
+- If everything went well, you should end up with a binary file of about 175.6KiB. This is the new cromwell payload for mcpx-attack. 
+
+- Now that Cromwell is prepped, the next step is to download mcpx-tools, and build mcpx-attack.
+
+- Following this, you should have your cromwell payload and the mcpx-attack tool. You now need to get a copy of your xbox's stock bios, and add it into a folder containing mcpx-attack and the cromwell payload.
+
+- the following command should now be run:
+./mcpx-attack 1.# ./path_to_stock_bios.bin -i ./path_to_cromwell_payload.bin -0 ./final_bios_image.bin where # = (0 or 1 depending on your MCPX rom version) 
+
+
+- The resulting bios file can now be flashed onto a modchip (I used an aladdin clone with 256KB of flash) before being placed into your xbox and the xbox turned on.
+
+- If everything went well, you should now have the MCPX rom on your screen. You just need to copy it by hand 😛  (As a hint, the MCPX roms start with the Hex values 0x33 0xC0 and end with the hex values 0x02 0xEE
+
+
+What it does: 
+
+RC4 patches a jump instruction to point to 0x1000, and TEA adds X-codes, patches jump instruction for fbl, and I think that was it.
+ok, so yeah that's all mcpx-attack does. Well apart from inserting whatever payload I wanted at 0x1000 with the -i parameter
+
