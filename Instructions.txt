@@ -15,7 +15,7 @@ Writeup of how I did it.
 - Following this, you should have your cromwell payload and the mcpx-attack tool. You now need to get a copy of your xbox's stock bios, and add it into a folder containing mcpx-attack and the cromwell payload.
 
 - the following command should now be run:
-./mcpx-attack 1.# ./path_to_stock_bios.bin -i ./path_to_cromwell_payload.bin -0 ./final_bios_image.bin where # = (0 or 1 depending on your MCPX rom version) 
+./mcpx-attack 1.# ./path_to_stock_bios.bin -i ./path_to_cromwell_payload.bin -o ./final_bios_image.bin where # = (0 or 1 depending on your MCPX rom version) 
 
 
 - The resulting bios file can now be flashed onto a modchip (I used an aladdin clone with 256KB of flash) before being placed into your xbox and the xbox turned on.
