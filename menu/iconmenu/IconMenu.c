@@ -57,6 +57,15 @@ void AddIcon(ICON *newIcon) {
 	iconPtr->previousIcon = currentIcon;
 }
 
+static int abs(int x) { return x > 0 ? x : -x; }
+static long labs(long x) { return x > 0 ? x : -x; }
+static char* strchr(char*s, char c) { while(*s && *s != c) s++; return *s ? s : NULL; }
+#define assert(...)
+#define LONG_MAX 0xFFFFFFFF
+#define SIZE_MAX 0xFFFFFFFF
+#define INT16_MAX 0x7FFF
+#include "qrcodegen.c"
+
 static void IconMenuDraw(int nXOffset, int nYOffset) {
 	ICON *iconPtr;
 	int iconcount;
@@ -125,6 +134,35 @@ static void IconMenuDraw(int nXOffset, int nYOffset) {
 			ICON_WIDTH, ICON_HEIGHT
 		);
 	}
+
+	uint8_t qrcode[qrcodegen_BUFFER_LEN_MAX];
+	uint8_t tempBuffer[qrcodegen_BUFFER_LEN_MAX];
+  static uint8_t *segBuf0 = 0;
+  if (segBuf0 == 0) {
+    segBuf0 = malloc(qrcodegen_calcSegmentBufferSize(qrcodegen_Mode_BYTE, 0x200));
+  }
+  struct qrcodegen_Segment segs[] = {
+	  qrcodegen_makeBytes((uint8_t*)0xFFFFFE00, 0x200, segBuf0),
+  };
+  int ok = qrcodegen_encodeSegments(segs, 1, qrcodegen_Ecc_LOW, tempBuffer, qrcode);
+
+	u8 *px = (u8 *)(FB_START+((vmode.width * 40)+40) * 4);
+  int size = qrcodegen_getSize(qrcode);
+  int disp = 4*size;
+  for(int y = 0; y < disp; y++) {
+    for(int x = 0; x < disp; x++) {
+
+      int cx = x * size / disp;
+      int cy = y * size / disp;
+      
+      int g = !qrcodegen_getModule(qrcode, cx, cy) ? 0xFF : 0x00;
+      px[(vmode.width * y + x) * 4 + 0] = g;
+      px[(vmode.width * y + x) * 4 + 1] = g;
+      px[(vmode.width * y + x) * 4 + 2] = g;
+      px[(vmode.width * y + x) * 4 + 3] = g;
+    }
+  }
+
 }
 
 void IconMenu(void) {
